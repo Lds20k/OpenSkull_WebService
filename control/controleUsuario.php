@@ -3,7 +3,7 @@ include_once 'controle.php';
 include_once 'dao/usuarioDAO.php';
 include_once '../model/usuario.php';
 
-abstract class ControleUsuario extends Controle{
+abstract class ControleUsuario{
 
     protected static function converter(Usuario $usuario){
         $usuarioJson                 = new stdClass;
@@ -20,10 +20,10 @@ abstract class ControleUsuario extends Controle{
         return $usuarioJson;
     }
 
-    public static function inserir($dataNascimento = null, $tipo = null, $email = null, $senha = null, $nome = null, $sobrenome = null, $instituicao = null, $imagem = null, $biografia = null){
+    public static function inserir($dataNascimento, $tipo = null, $email = null, $senha = null, $nome = null, $sobrenome = null, $instituicao = null, $imagem = null, $biografia = null){
         try {
             $usuario = new Usuario(null, $dataNascimento, $tipo, $email, $senha, $nome, $sobrenome, $instituicao, $imagem, $biografia);
-            
+            echo $dataNascimento;
         } catch (Throwable $th) {
             
         }

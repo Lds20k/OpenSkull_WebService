@@ -6,7 +6,7 @@ include_once '../model/modulo.php';
 
 
 
-abstract class ControleModulo extends Controle{
+abstract class ControleModulo{
 	public static function inserir($idCurso, $nome){
 		try {
 			$curso = ControleCurso::consultarUm($idCurso);

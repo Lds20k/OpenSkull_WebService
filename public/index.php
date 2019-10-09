@@ -4,22 +4,27 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
+require '../vendor/autoload.php';
 
-include_once '../control/controleUsuario.php';
+require '../control/controleUsuario.php';
 
 $app = AppFactory::create();
+
+//$app->addErrorMiddleware(false, true, true);
 
 $app->group('/api', function(RouteCollectorProxy $group){
     
     $group->group('/usuario', function(RouteCollectorProxy $group){
-        
-        $group->get('/inserir', function(Request $request, Response $response, $args) {
-            $usuario = json_encode(ControleUsuario::inserir(20));
+
+        $group->post('/inserir', function(Request $request, Response $response, $args) {
+            var_dump($request->getUri()->getQuery());
+            $group->post['dataNascimento'];
+            $usuarioJSON = $request->dataNascimeto;
+            $usuario = json_encode( ControleUsuario::inserir($usuarioJSON->dataNascimento));
             $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');;
         });
-        
+
     });
 
 });

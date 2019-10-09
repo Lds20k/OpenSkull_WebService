@@ -5,7 +5,7 @@ include_once '../model/usuario.php';
 include_once '../model/curso.php';
 
 
-abstract class ControleCurso extends Controle{
+abstract class ControleCurso{
 	public static function inserir($jwt, $nome, $imagem, $horas, $descricao, $preco){
 		try {
 			$dados = JWT::decode($jwt);
