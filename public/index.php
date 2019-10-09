@@ -11,11 +11,15 @@ include_once '../control/controleUsuario.php';
 $app = AppFactory::create();
 
 $app->group('/api', function(RouteCollectorProxy $group){
-
-    $group->get('/', function(Request $request, Response $response, $args) {
-        $usuario = json_encode(ControleUsuario::inserir(20));
-        $response->getBody()->write($usuario);
-        return $response->withHeader('Content-Type', 'application/json');;
+    
+    $group->group('/usuario', function(RouteCollectorProxy $group){
+        
+        $group->get('/inserir', function(Request $request, Response $response, $args) {
+            $usuario = json_encode(ControleUsuario::inserir(20));
+            $response->getBody()->write($usuario);
+            return $response->withHeader('Content-Type', 'application/json');;
+        });
+        
     });
 
 });
