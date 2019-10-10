@@ -61,9 +61,9 @@ abstract class ControleUsuario{
         return $resposta;
     }
 
-    public static function jwt($args){
+    public static function getJWT($args){
         try{
-            $resposta = UsuarioDAO::jwt($args['email'], $args['senha']);
+            $resposta = UsuarioDAO::getJWT($args['email'], $args['senha']);
         }catch(Exception $ex){
             $resposta = ['status' => false];
         }
