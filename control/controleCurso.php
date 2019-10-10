@@ -10,8 +10,9 @@ abstract class ControleCurso{
 		try {
 			$dados = JWT::decode($jwt);
 			$usuario = ControleUsuario::consultarUm($dados->id);
+			$usuario = new Usuario($usuario->id, null, null, null, null, null, null, null, null, null);
 			$curso = new Curso(null, $usuario, $nome, $imagem, $horas, $descricao, $preco);
-		} catch (Exception $e) {
+		} catch (Exception $ex) {
 			
 		}
 	}
@@ -21,7 +22,7 @@ abstract class ControleCurso{
 			$dados = JWT::decode($jwt);
 			$usuario = ControleUsuario::consultarUm($dados->id);
 			$curso = new Curso($id, $usuario, $nome, $imagem, $horas, $descricao, $preco);
-		}catch(Exception $e){
+		}catch(Exception $ex){
 
 		}
 	}
