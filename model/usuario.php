@@ -108,4 +108,22 @@ class Usuario{
     public function setBiografia($biografia){
         $this->biografia = $biografia;
     }
+
+    //Outros metodos
+
+    public function converter(bool $senha = null){
+        $usuario                 = new stdClass;
+        $usuario->id             = $this->id;
+        $usuario->dataNascimento = $this->dataNascimento;
+        $usuario->tipo           = $this->tipo;
+        $usuario->email          = $this->email;
+        if($senha)
+        $usuario->senha          = $this->senha;
+        $usuario->nome           = $this->nome;
+        $usuario->sobrenome      = $this->sobrenome;
+        $usuario->instituicao    = $this->instituicao;
+        $usuario->imagem         = $this->imagem;
+        $usuario->biografia      = $this->biografia;
+        return $usuario;
+    }
 }

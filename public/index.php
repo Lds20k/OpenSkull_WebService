@@ -4,7 +4,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 
-require '../vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 require '../control/controleUsuario.php';
 
@@ -31,16 +31,16 @@ $app->group('/api', function(RouteCollectorProxy $group){
         });
         
         //Get um
-        $group->get('/{id}', function(Request $request, Response $response, $args) {
-            $usuarios = json_encode(ControleUsuario::consultarUm(1));
+        $group->get('/{key}', function(Request $request, Response $response, $args) {
+            $usuarios = json_encode(ControleUsuario::consultarUm($args['key']));
             $response->getBody()->write($usuarios);
             return $response->withHeader('Content-Type', 'application/json');;
         });
 
         //Deleta um
         $group->delete('/{id}', function (Request $request, Response $response, $args) {
-    		ControleUsuario::deletar(1);
-    		$response->getBody()->write("");
+    		$resposta = json_encode( ControleUsuario::deletar($args['id']) );
+    		$response->getBody()->write($resposta);
     		return $response;
 		});
     });
