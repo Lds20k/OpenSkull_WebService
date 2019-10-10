@@ -21,15 +21,36 @@ abstract class ControleUsuario{
         return $usuarioJson;
     }
 
-    public static function inserir($dataNascimento, $tipo = null, $email = null, $senha = null, $nome = null, $sobrenome = null, $instituicao = null, $imagem = null, $biografia = null){
+    public static function inserir($args){
         try {
-            $usuario = new Usuario(null, $dataNascimento, $tipo, $email, $senha, $nome, $sobrenome, $instituicao, $imagem, $biografia);
-            echo $dataNascimento;
-        } catch (Throwable $th) {
+            if(!isset($args['tipo'])){
+                $args['tipo'] = 'c';
+            }
+
+            if(!isset($args['instituicao'])){
+                $args['instituicao'] = null;
+            }
+
+            if(!isset($args['imagem'])){
+                $args['imagem'] = null;
+            }
+
+            if(!isset($args['biografia'])){
+                $args['biografia'] = null;
+            }
+
+            if(sizeof($args) == 9){
+                $args = (object)$args;
+                $usuario = new Usuario(null, $args->dataNascimento, $args->tipo, $args->email, $args->senha, $args->nome, $args->sobrenome, $args->instituicao, $args->imagem, $args->biografia);
+                $status = UsuarioDAO::inserir($usuario);
+            }else{
+                $status = ['status' => false];
+            }
             
+        } catch (Throwable $th) {
+            $status = ['status' => false];
         }
-        
-        return ControleUsuario::converter($usuario);
+        return $status;
     }
 
     public static function consultar(){

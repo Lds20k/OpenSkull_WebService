@@ -16,28 +16,29 @@ $app->group('/api', function(RouteCollectorProxy $group){
     
     $group->group('/usuario', function(RouteCollectorProxy $group){
 
-        $group->post('/inserir', function(Request $request, Response $response, $args) {
-            var_dump($request->getUri()->getQuery());
-            $group->post['dataNascimento'];
-            $usuarioJSON = $request->dataNascimeto;
-            $usuario = json_encode( ControleUsuario::inserir($usuarioJSON->dataNascimento));
+        //Insere
+        $group->post('', function(Request $request, Response $response, $args) {
+            $usuario = json_encode( ControleUsuario::inserir( $request->getQueryParams() ) );
             $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');;
         });
 
-        $group->get('/consultar', function(Request $request, Response $response, $args) {
+        //Get todos
+        $group->get('', function(Request $request, Response $response, $args) {
             $usuarios = json_encode(ControleUsuario::consultar());
             $response->getBody()->write($usuarios);
             return $response->withHeader('Content-Type', 'application/json');;
         });
         
-        $group->get('/consultarUm', function(Request $request, Response $response, $args) {
+        //Get um
+        $group->get('/{id}', function(Request $request, Response $response, $args) {
             $usuarios = json_encode(ControleUsuario::consultarUm(1));
             $response->getBody()->write($usuarios);
             return $response->withHeader('Content-Type', 'application/json');;
         });
 
-        $group->delete('/deletar', function (Request $request, Response $response, $args) {
+        //Deleta um
+        $group->delete('/{id}', function (Request $request, Response $response, $args) {
     		ControleUsuario::deletar(1);
     		$response->getBody()->write("");
     		return $response;
