@@ -2,7 +2,6 @@
 include_once 'controle.php';
 include_once 'dao/usuarioDAO.php';
 include_once '../model/usuario.php';
-include_once '../connect/conexao.php';
 
 
 abstract class ControleUsuario{
@@ -44,9 +43,9 @@ abstract class ControleUsuario{
         return $resposta;
     }
 
-    public static function consultarUm($id){
+    public static function consultarUm($key){
         try{
-            $resposta = UsuarioDAO::consultarUm($id);
+            $resposta = UsuarioDAO::consultarUm($key);
         }catch(Exception $ex){
             $resposta = ['status' => false];
         }
@@ -56,6 +55,15 @@ abstract class ControleUsuario{
     public static function deletar($id){
         try{
             $resposta = UsuarioDAO::deletar($id);
+        }catch(Exception $ex){
+            $resposta = ['status' => false];
+        }
+        return $resposta;
+    }
+
+    public static function jwt($args){
+        try{
+            $resposta = UsuarioDAO::jwt($args['email'], $args['senha']);
         }catch(Exception $ex){
             $resposta = ['status' => false];
         }
