@@ -27,7 +27,7 @@ abstract class ControleCurso{
             }
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
-			echo $ex;
+			//echo $ex;
 		}
 		return $resposta;
 	}
@@ -43,7 +43,12 @@ abstract class ControleCurso{
 	}
 
 	public static function consultar(){
-		
+		try{
+			$resposta = CursoDAO::consultar();
+		}catch(Exception $ex){
+			return ['status' => false];
+		}
+		return $resposta;
 	}
 
 	public static function consultarUm($id){

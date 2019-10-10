@@ -54,8 +54,17 @@ $app->group('/api', function(RouteCollectorProxy $group){
     });
 
     $group->group('/curso', function(RouteCollectorProxy $group){
+
+        //Insere
         $group->post('', function(Request $request, Response $response, $args) { 
             $curso = json_encode(ControleCurso::inserir( $request->getQueryParams() ));
+            $response->getBody()->write($curso);
+            return $response->withHeader('Content-Type', 'application/json');;
+        });
+
+        //Get todos
+        $group->get('', function(Request $request, Response $response, $args) {
+            $curso = json_encode(ControleCurso::consultar());
             $response->getBody()->write($curso);
             return $response->withHeader('Content-Type', 'application/json');;
         });

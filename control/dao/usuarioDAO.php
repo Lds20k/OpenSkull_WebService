@@ -37,7 +37,7 @@ abstract class UsuarioDAO{
         $stmt = $conexao->prepare($SQL);
 
         if(!$stmt->execute()){
-            throw new Exception('Erro ao consultar usuario mo banco!');
+            throw new Exception('Erro ao consultar usuario no banco!');
         }
         if($stmt->rowCount() < 1){
             throw new Exception('Nenhum usuario registrado!');

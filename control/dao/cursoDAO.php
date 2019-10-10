@@ -1,6 +1,7 @@
 <?php
 include_once '../connect/conexao.php';
 include_once '../model/curso.php';
+include_once '../control/controleUsuario.php';
 
 abstract class CursoDAO{
 	private static $tabela = 'curso';
@@ -23,4 +24,30 @@ abstract class CursoDAO{
 		}
 		return ['status' => true];
 	}
-}
+
+	public static function consultar(){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'SELECT * FROM '.CursoDAO::$tabela;
+
+		$stmt = $conexao->prepare($SQL);
+
+		if(!$stmt->execute()){
+            throw new Exception('Erro ao consultar curso no banco!');
+        }
+        if($stmt->rowCount() < 1){
+            throw new Exception('Nenhum curso registrado!');
+        }
+
+        $cursos = Array();
+        $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($coluna as $chave => $valor) {
+        	$criador =  ControleUsuario::consultarUm($valor['Criador']);
+        	$criador =  $criador['usuario'];
+        	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
+
+        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco']);
+        	array_push($cursos, $curso->converter());
+        }
+        return ['status' => true, 'cursos' => $cursos];
+	}
+}	
