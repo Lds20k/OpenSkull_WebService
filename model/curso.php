@@ -90,13 +90,13 @@ class Curso{
 
 	public function converter(){
 		$curso            = new stdClass;
-		$curso->id        = $this->$id;
-		$curso->criador   = $this->$criador;
-		$curso->nome      = $this->$nome;
-		$curso->imagem    = $this->$imagem;
-		$curso->horas     = $this->$horas;
-		$curso->descricao = $this->$descricao;
-		$curso->preco     = $this->$preco;
+		$curso->id        = $this->id;
+		$curso->criador   = $this->criador->converter();
+		$curso->nome      = $this->nome;
+		$curso->imagem    = $this->imagem;
+		$curso->horas     = $this->horas;
+		$curso->descricao = $this->descricao;
+		$curso->preco     = $this->preco;
 		return $curso;
 	}
 }
