@@ -1,8 +1,7 @@
 <?php
-use \Firebase\JWT\JWT;
-
 include_once '../connect/conexao.php';
 include_once '../model/usuario.php';
+include_once '../model/jwt.php';
 
 abstract class UsuarioDAO{
     public static $tabela = 'usuario';
@@ -91,7 +90,7 @@ abstract class UsuarioDAO{
         return ['status' => true];
     }
 
-    public static function jwt($email, $senha){
+    public static function getJWT($email, $senha){
         $conexao = ConexaoPDO::getConexao();
         $SQL = 'SELECT ID, Senha FROM '.UsuarioDAO::$tabela.' WHERE Email = ?';
         $stmt = $conexao->prepare($SQL);
@@ -118,11 +117,10 @@ abstract class UsuarioDAO{
                     'email' => $email
                 ]
             );
-            $jwt = JWT::encode($token, $chave);
+            $jwt = (new OpenSkullJWT(['id' => $coluna['ID'], 'email' => $email]))->get();
         }else{
             throw new Exception('Senha incorreta!');
         }
-
         return ['status' => true, 'jwt' => $jwt];
     }
 }

@@ -45,9 +45,9 @@ $app->group('/api', function(RouteCollectorProxy $group){
     		return $response;
         });
         
-        //Logar
+        //Retorna um jwt para login
         $group->post('/jwt', function(Request $request, Response $response, $args) {
-            $usuario = json_encode( ControleUsuario::jwt( $request->getQueryParams() ) );
+            $usuario = json_encode( ControleUsuario::getJWT( $request->getQueryParams() ) );
             $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');;
         });
