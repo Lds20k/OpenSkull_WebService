@@ -3,7 +3,7 @@ include_once '../connect/conexao.php';
 include_once '../model/curso.php';
 
 abstract class CursoDAO{
-	private static $tabela = 'Curso';
+	private static $tabela = 'curso';
 
 	public static function inserir(Curso $curso){
 		$conexao = ConexaoPDO::getConexao();
@@ -11,7 +11,7 @@ abstract class CursoDAO{
 							 VALUES (?, ?, ?, ?, ?, ?)';
 		$curso = $curso->converter();
 		$stmt = $conexao->prepare($SQL);
-		$stmt->bindParam(1, $curso->$criador->id);
+		$stmt->bindParam(1, $curso->criador->id);
 		$stmt->bindParam(2, $curso->nome);
 		$stmt->bindParam(3, $curso->imagem);
 		$stmt->bindParam(4, $curso->horas);

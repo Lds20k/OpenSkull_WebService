@@ -7,6 +7,7 @@ use Slim\Factory\AppFactory;
 require __DIR__ . '/../vendor/autoload.php';
 
 require '../control/controleUsuario.php';
+require '../control/controleCurso.php';
 
 $app = AppFactory::create();
 
@@ -52,6 +53,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
         });
     });
 
+    $group->group('/curso', function(RouteCollectorProxy $group){
+        $group->post('', function(Request $request, Response $response, $args) { 
+            $curso = json_encode(ControleCurso::inserir( $request->getQueryParams() ));
+            $response->getBody()->write($curso);
+            return $response->withHeader('Content-Type', 'application/json');;
+        });
+    });
 });
 
 $app->run();
