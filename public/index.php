@@ -42,7 +42,14 @@ $app->group('/api', function(RouteCollectorProxy $group){
     		$resposta = json_encode( ControleUsuario::deletar($args['id']) );
     		$response->getBody()->write($resposta);
     		return $response;
-		});
+        });
+        
+        //Logar
+        $group->post('/jwt', function(Request $request, Response $response, $args) {
+            $usuario = json_encode( ControleUsuario::jwt( $request->getQueryParams() ) );
+            $response->getBody()->write($usuario);
+            return $response->withHeader('Content-Type', 'application/json');;
+        });
     });
 
 });

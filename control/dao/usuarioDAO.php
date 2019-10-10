@@ -1,4 +1,6 @@
 <?php
+use \Firebase\JWT\JWT;
+
 include_once '../connect/conexao.php';
 include_once '../model/usuario.php';
 
@@ -23,19 +25,19 @@ abstract class UsuarioDAO{
         $stmt->bindParam(9, $usuario->biografia);
 
         if(!$stmt->execute()){
-            throw new Exception('Erro ao inserir no banco!');
+            throw new Exception('Erro ao inserir usuario no banco!');
         }
         return ['status' => true];
     }
 
     public static function consultar(){
         $conexao = ConexaoPDO::getConexao();
-        $SQL = "SELECT ID, Data_Nascimento, Tipo, Email, Nome, Sobrenome, Instituicao, Imagem, Biografia FROM ".UsuarioDAO::$tabela;
+        $SQL = 'SELECT ID, Data_Nascimento, Tipo, Email, Nome, Sobrenome, Instituicao, Imagem, Biografia FROM '.UsuarioDAO::$tabela;
 
         $stmt = $conexao->prepare($SQL);
 
         if(!$stmt->execute()){
-            throw new Exception('Erro ao consultar o banco!');
+            throw new Exception('Erro ao consultar usuario mo banco!');
         }
         if($stmt->rowCount() < 1){
             throw new Exception('Nenhum usuario registrado!');
@@ -64,7 +66,7 @@ abstract class UsuarioDAO{
         $stmt->bindParam(1, $key);
         
         if(!$stmt->execute()){
-            throw new Exception('Erro ao consultar o banco!');
+            throw new Exception('Erro ao consultar usuario no banco!');
         }
         if($stmt->rowCount() < 1){
             throw new Exception('Usuario não encontrado!');
@@ -77,15 +79,50 @@ abstract class UsuarioDAO{
 
     public static function deletar($id){
         $conexao = ConexaoPDO::getConexao();
-        $SQL = "DELETE FROM usuario WHERE id = ?";
+        $SQL = 'DELETE FROM usuario WHERE id = ?';
         $stmt = $conexao->prepare($SQL);
 
         $stmt->bindParam(1, $id);
 
         if(!$stmt->execute()){
-            throw new Exception('Erro ao deletar do banco!');
+            throw new Exception('Erro ao deletar usuario do banco!');
         }
 
         return ['status' => true];
+    }
+
+    public static function jwt($email, $senha){
+        $conexao = ConexaoPDO::getConexao();
+        $SQL = 'SELECT ID, Senha FROM '.UsuarioDAO::$tabela.' WHERE Email = ?';
+        $stmt = $conexao->prepare($SQL);
+
+        $stmt->bindParam(1, $email);
+
+        if(!$stmt->execute()){
+            throw new Exception('Erro ao consultar usuario do banco!');
+        }
+        if($stmt->rowCount() < 1){
+            throw new Exception('Usuario não encontrado!');
+        }
+
+        $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
+        if(password_verify($senha, $coluna['Senha'])){
+            $chave = "test_key";
+            $token = array(
+                'iss' => 'http://www.openskull.web_service.com',
+                'aud' => 'http://www.openskull.web_service.com',
+                'iat' => 1356999524,
+                'nbf' => 1357000000,
+                'dados' => [
+                    'id'    => $coluna['ID'],
+                    'email' => $email
+                ]
+            );
+            $jwt = JWT::encode($token, $chave);
+        }else{
+            throw new Exception('Senha incorreta!');
+        }
+
+        return ['status' => true, 'jwt' => $jwt];
     }
 }
