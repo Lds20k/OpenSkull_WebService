@@ -6,7 +6,7 @@ include_once 'controleUsuario.php';
 include_once '../model/usuario.php';
 include_once '../model/curso.php';
 include_once 'dao/cursoDAO.php';
-
+include_once '../model/jwt.php';
 
 abstract class ControleCurso{
 	public static function inserir($args){
@@ -17,7 +17,7 @@ abstract class ControleCurso{
 
             if(sizeof($args) == 6){
             	$args = (Object)$args;
-            	$dados = JWT::decode($args->jwt, "test_key", array('HS256'));
+            	$dados = OpenSkullJWT::decodificar($args->jwt);
 				$usuario = ControleUsuario::consultarUm($dados->dados->id);
 				$usuario = new Usuario($usuario['usuario']->id, null, null, null, null, null, null, null, null, null);
 				$curso = new Curso(null, $usuario, $args->nome, $args->imagem, $args->horas, $args->descricao, $args->preco);
@@ -52,10 +52,21 @@ abstract class ControleCurso{
 	}
 
 	public static function consultarUm($id){
-
+		try{
+			$reposta = CursoDAO::consultarUm($id);
+		}catch(Exception $ex){
+			$resposta = ['status' => false];
+		}
+		return $reposta;
 	}
 
 	public static function deletar($id){
-
+		try{
+			$respota = CursoDAO::deletar($id);
+		}catch(Exception $ex){
+			$resposta = ['status' => false];
+			echo $ex;
+		}
+		return $resposta;
 	}
 }

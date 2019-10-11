@@ -75,6 +75,20 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($curso);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        //Get um
+        $group->get('/{id}', function(Request $request, Response $response, $args) {
+            $usuarios = json_encode(ControleCurso::consultarUm( $args['id'] ));
+            $response->getBody()->write($usuarios);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Deleta um
+        $group->delete('/{id}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleCurso::deletar( $args['id']) );
+            $response->getBody()->write($resposta);
+            return $response;
+        });
     });
 });
 
