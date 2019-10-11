@@ -8,15 +8,15 @@ abstract class ControleUsuario{
 
     public static function inserir($args){
         try {
-            if(!isset($args['instituicao'])){
+            if(!isset($args['instituicao']) or $args['instituicao'] == ''){
                 $args['instituicao'] = null;
             }
 
-            if(!isset($args['imagem'])){
+            if(!isset($args['imagem']) or $args['imagem'] == ''){
                 $args['imagem'] = null;
             }
 
-            if(!isset($args['biografia'])){
+            if(!isset($args['biografia']) or $args['biografia'] == ''){
                 $args['biografia'] = null;
             }
 
@@ -95,9 +95,9 @@ abstract class ControleUsuario{
                 (isset($args->senha         )) ? $args->senha          : null, 
                 (isset($args->nome          )) ? $args->nome           : null, 
                 (isset($args->sobrenome     )) ? $args->sobrenome      : null, 
-                (isset($args->instituicao   ) and $args->instituicao != '') ? $args->instituicao    : null, 
-                (isset($args->imagem        ) and $args->imagem      != '') ? $args->imagem         : null, 
-                (isset($args->biografia     ) and $args->biografia   != '') ? $args->biografia      : null
+                (isset($args->instituicao   ) and $args->instituicao != '') ? $args->instituicao : null, 
+                (isset($args->imagem        ) and $args->imagem      != '') ? $args->imagem      : null, 
+                (isset($args->biografia     ) and $args->biografia   != '') ? $args->biografia   : null
             );
             $resposta = UsuarioDAO::atualizar($usuario);
         }catch(Exception $ex){
