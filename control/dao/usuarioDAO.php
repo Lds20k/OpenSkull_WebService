@@ -35,12 +35,10 @@ abstract class UsuarioDAO{
 
         $stmt = $conexao->prepare($SQL);
 
-        if(!$stmt->execute()){
+        if(!$stmt->execute())
             throw new Exception('Erro ao consultar usuario no banco!');
-        }
-        if($stmt->rowCount() < 1){
+        if($stmt->rowCount() < 1)
             throw new Exception('Nenhum usuario registrado!');
-        }
 
         $usuarios = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -55,21 +53,21 @@ abstract class UsuarioDAO{
     public static function consultarUm($key){
         $conexao = ConexaoPDO::getConexao();
         $SQL = 'SELECT ID, Data_Nascimento, Tipo, Email, Nome, Sobrenome, Instituicao, Imagem, Biografia FROM '.UsuarioDAO::$tabela.' WHERE ';
+        
         if(is_numeric($key)){
             $SQL .= 'ID = ?';
         }else{
             $SQL .= 'Email = ?';
         }
+
         $stmt= $conexao->prepare($SQL);
 
         $stmt->bindParam(1, $key);
         
-        if(!$stmt->execute()){
+        if(!$stmt->execute())
             throw new Exception('Erro ao consultar usuario no banco!');
-        }
-        if($stmt->rowCount() < 1){
+        if($stmt->rowCount() < 1)
             throw new Exception('Usuario não encontrado!');
-        }
 
         $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
         $usuario = new Usuario($coluna['ID'], $coluna['Data_Nascimento'], $coluna['Tipo'], $coluna['Email'], null, $coluna['Nome'], $coluna['Sobrenome'], $coluna['Instituicao'], $coluna['Imagem'], $coluna['Biografia']);
@@ -83,9 +81,8 @@ abstract class UsuarioDAO{
 
         $stmt->bindParam(1, $id);
 
-        if(!$stmt->execute()){
+        if(!$stmt->execute())
             throw new Exception('Erro ao deletar usuario do banco!');
-        }
 
         return ['status' => true];
     }
@@ -97,30 +94,108 @@ abstract class UsuarioDAO{
 
         $stmt->bindParam(1, $email);
 
-        if(!$stmt->execute()){
+        if(!$stmt->execute())
             throw new Exception('Erro ao consultar usuario do banco!');
-        }
-        if($stmt->rowCount() < 1){
+        if($stmt->rowCount() < 1)
             throw new Exception('Usuario não encontrado!');
-        }
 
         $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
-        if(password_verify($senha, $coluna['Senha'])){
-            $chave = "test_key";
-            $token = array(
-                'iss' => 'http://www.openskull.web_service.com',
-                'aud' => 'http://www.openskull.web_service.com',
-                'iat' => 1356999524,
-                'nbf' => 1357000000,
-                'dados' => [
-                    'id'    => $coluna['ID'],
-                    'email' => $email
-                ]
-            );
-            $jwt = (new OpenSkullJWT(['id' => $coluna['ID'], 'email' => $email]))->get();
-        }else{
+        if(password_verify($senha, $coluna['Senha']))
+            $jwt = OpenSkullJWT::codificar(['id' => $coluna['ID'], 'email' => $email]);
+        else
             throw new Exception('Senha incorreta!');
-        }
+
         return ['status' => true, 'jwt' => $jwt];
+    }
+
+    public static function atualizar(Usuario $usuario){
+        $conexao = ConexaoPDO::getConexao();
+        function executar($stmt){
+            if(!$stmt->execute()){
+                echo a;
+                return false;
+            }
+            return true;
+        }
+
+        $usuario = $usuario->converter(true);
+        $condicao = 'WHERE ID = ?';
+        if(!is_null($usuario->dataNascimento)){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Data_Nascimento = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $usuario->dataNascimento);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar a data de nascimento do usuario!');
+        }
+
+        if(!is_null($usuario->tipo) and $usuario->tipo != ''){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Tipo = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $usuario->tipo);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o tipo de conta do usuario!');
+        }
+
+        if(!is_null($usuario->email) and $usuario->email != ''){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Email = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $usuario->email);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o email do usuario!');
+        }
+
+        if(!is_null($usuario->senha) and $usuario->senha != ''){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Senha = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $usuario->senha = password_hash($usuario->senha, PASSWORD_DEFAULT);
+            $stmt->bindParam(1, $usuario->senha);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar a senha do usuario!');
+        }
+
+        if(!is_null($usuario->nome) and $usuario->nome != ''){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Nome = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $usuario->nome);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o nome do usuario!');
+        }
+
+        if(!is_null($usuario->sobrenome) and $usuario->sobrenome != ''){
+            $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Sobrenome = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $usuario->sobrenome);
+            $stmt->bindParam(2, $usuario->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o sobrenome do usuario!');
+        }
+
+        $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Instituicao = ? ' . $condicao;
+        $stmt = $conexao->prepare($SQL);
+        $stmt->bindParam(1, $usuario->instituicao);
+        $stmt->bindParam(2, $usuario->id);
+        if(!executar($stmt))
+            throw new Exception('Erro ao atualizar a instituicao do usuario!');
+
+        $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Imagem = ? ' . $condicao;
+        $stmt = $conexao->prepare($SQL);
+        $stmt->bindParam(1, $usuario->imagem);
+        $stmt->bindParam(2, $usuario->id);
+        if(!executar($stmt))
+            throw new Exception('Erro ao atualizar a imagem do usuario!');
+
+        $SQL = 'UPDATE '.UsuarioDAO::$tabela.' SET Biografia = ? ' . $condicao;
+        $stmt = $conexao->prepare($SQL);
+        $stmt->bindParam(1, $usuario->biografia);
+        $stmt->bindParam(2, $usuario->id);
+        if(!executar($stmt))
+            throw new Exception('Erro ao atualizar a biografia do usuario!');
+
+        return ['status' => true];
     }
 }

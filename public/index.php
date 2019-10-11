@@ -21,26 +21,26 @@ $app->group('/api', function(RouteCollectorProxy $group){
         $group->post('', function(Request $request, Response $response, $args) {
             $usuario = json_encode( ControleUsuario::inserir( $request->getQueryParams() ) );
             $response->getBody()->write($usuario);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
         });
 
         //Get todos
         $group->get('', function(Request $request, Response $response, $args) {
             $usuarios = json_encode(ControleUsuario::consultar());
             $response->getBody()->write($usuarios);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
         });
         
         //Get um
         $group->get('/{key}', function(Request $request, Response $response, $args) {
-            $usuarios = json_encode(ControleUsuario::consultarUm($args['key']));
+            $usuarios = json_encode(ControleUsuario::consultarUm( $args['key'] ));
             $response->getBody()->write($usuarios);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
         });
 
         //Deleta um
         $group->delete('/{id}', function (Request $request, Response $response, $args) {
-    		$resposta = json_encode( ControleUsuario::deletar($args['id']) );
+    		$resposta = json_encode( ControleUsuario::deletar( $args['id']) );
     		$response->getBody()->write($resposta);
     		return $response;
         });
@@ -49,7 +49,14 @@ $app->group('/api', function(RouteCollectorProxy $group){
         $group->post('/jwt', function(Request $request, Response $response, $args) {
             $usuario = json_encode( ControleUsuario::getJWT( $request->getQueryParams() ) );
             $response->getBody()->write($usuario);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Atualiza um
+        $group->put('/{jwt}', function(Request $request, Response $response, $args) {
+            $usuario = json_encode( ControleUsuario::atualizar( $args['jwt'], $request->getQueryParams() ) );
+            $response->getBody()->write($usuario);
+            return $response->withHeader('Content-Type', 'application/json');
         });
     });
 
@@ -59,14 +66,14 @@ $app->group('/api', function(RouteCollectorProxy $group){
         $group->post('', function(Request $request, Response $response, $args) { 
             $curso = json_encode(ControleCurso::inserir( $request->getQueryParams() ));
             $response->getBody()->write($curso);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
         });
 
         //Get todos
         $group->get('', function(Request $request, Response $response, $args) {
             $curso = json_encode(ControleCurso::consultar());
             $response->getBody()->write($curso);
-            return $response->withHeader('Content-Type', 'application/json');;
+            return $response->withHeader('Content-Type', 'application/json');
         });
     });
 });

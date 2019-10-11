@@ -10,27 +10,34 @@ class OpenSkullJWT{
         'iat' => 1356999524,
         'nbf' => 1357000000
     );
-    private $dados;
-
-    //Entrar com um array associativo
-    function __construct(Array $dados){
-        $this->dados = $dados;
-    }
 
     //Retorna um JWT
-    function get(){
-        return JWT::encode(OpenSkullJWT::$token + $this->dados, OpenSkullJWT::$chave, 'HS256');
+    public static function codificar(Array $dados){
+        return JWT::encode(OpenSkullJWT::$token + ['dados' => $dados], OpenSkullJWT::$chave, 'HS256');
+    }
+
+    /*
+    * Decodifica o JWT
+    * @param String $jwt Entrada do JSON WEB TOKEN para decodificação
+    */
+    public static function decodificar(String $jwt){
+        try {
+            return JWT::decode($jwt, OpenSkullJWT::$chave, array('HS256'));
+        } catch (Exception $ex) {
+            throw new Exception('JWT Invalido');
+        }
     }
 
     /*
     * Verifica o JWT
-    * @param String $jwt Entrada o JSON WEB TOKEN para verificação
+    * @param String $jwt Entrada do JSON WEB TOKEN para verificação
     */
-    function decodificar(String $jwt){
+    public static function verificar(String $jwt){
         try {
-            return JWT::decode($jwt, $chave, array('HS256'));
+            JWT::decode($jwt, OpenSkullJWT::$chave, array('HS256'));
+            return true;
         } catch (Exception $ex) {
-            throw new Exception('JWT Invalido');
+            return false;
         }
     }
 }
