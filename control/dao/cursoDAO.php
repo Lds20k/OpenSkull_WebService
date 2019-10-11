@@ -50,4 +50,41 @@ abstract class CursoDAO{
         }
         return ['status' => true, 'cursos' => $cursos];
 	}
+
+	public static function consultarUm($id){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'SELECT * FROM curso WHERE ID = ?';
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $id);
+
+		if(!$stmt->execute())
+			throw new Exception('Erro ao consultar curso no banco!');
+        if($stmt->rowCount() < 1)
+            throw new Exception('Curso não encontrado!');
+
+		$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		
+		$cursos = Array();
+        foreach ($coluna as $chave => $valor) {
+	        $criador =  ControleUsuario::consultarUm($valor['Criador']);
+        	$criador =  $criador['usuario'];
+        	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
+        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco']);
+        	array_push($cursos, $curso->converter());
+        }    
+		return ['status' => true, 'cursos' => $cursos];
+	}
+
+	public static function deletar($id){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'DELETE FROM curso WHERE ID = ?';
+
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $id);
+
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar curso no banco!');
+
+		return ['status' => true];
+	}
 }	
