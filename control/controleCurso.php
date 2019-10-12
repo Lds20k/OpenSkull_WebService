@@ -27,19 +27,8 @@ abstract class ControleCurso{
             }
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
-			//echo $ex;
 		}
 		return $resposta;
-	}
-
-	public static function atualizar($id, $jwt, $criador = null, $nome = null, $imagem = null, $horas = null, $descricao = null, $preco = null){
-		try{
-			$dados = JWT::decode($jwt);
-			$usuario = ControleUsuario::consultarUm($dados->id);
-			$curso = new Curso($id, $usuario, $nome, $imagem, $horas, $descricao, $preco);
-		}catch(Exception $ex){
-
-		}
 	}
 
 	public static function consultar(){
@@ -53,20 +42,24 @@ abstract class ControleCurso{
 
 	public static function consultarUm($id){
 		try{
-			$reposta = CursoDAO::consultarUm($id);
+			$resposta = CursoDAO::consultarUm($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
 		}
-		return $reposta;
+		return $resposta;
 	}
 
 	public static function deletar($id){
 		try{
-			$respota = CursoDAO::deletar($id);
+			$resposta = CursoDAO::deletar($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
 			echo $ex;
 		}
 		return $resposta;
+	}
+
+	public static function atualizar($id, $jwt, $criador = null, $nome = null, $imagem = null, $horas = null, $descricao = null, $preco = null){
+		
 	}
 }

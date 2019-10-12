@@ -8,6 +8,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 require '../control/controleUsuario.php';
 require '../control/controleCurso.php';
+require '../control/controleModulo.php';
+require '../control/controleLicao.php';
 
 $app = AppFactory::create();
 
@@ -88,6 +90,40 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $resposta = json_encode( ControleCurso::deletar( $args['id']) );
             $response->getBody()->write($resposta);
             return $response;
+        });
+    });
+
+    $group->group('/modulo', function(RouteCollectorProxy $group){
+
+        //Insere
+        $group->post('', function(Request $request, Response $response, $args) {
+            $modulo = json_encode( ControleModulo::inserir( $request->getQueryParams() ) );
+            $response->getBody()->write($modulo);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Get todos os modulos de um curso
+        $group->get('/all/{idCurso}', function(Request $request, Response $response, $args) {
+            $modulos = json_encode(ControleModulo::consultar($args['idCurso']));
+            $response->getBody()->write($modulos);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Get um modulo
+        $group->get('/one/{id}', function(Request $request, Response $response, $args) {
+            $modulo = json_encode(ControleModulo::consultarUm( $args['id'] ));
+            $response->getBody()->write($modulo);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+    });
+
+    $group->group('/licao', function(RouteCollectorProxy $group){
+
+        //Insere
+        $group->post('', function(Request $request, Response $response, $args) {
+            $licao = json_encode( ControleLicao::inserir( $request->getQueryParams() ) );
+            $response->getBody()->write($licao);
+            return $response->withHeader('Content-Type', 'application/json');
         });
     });
 });

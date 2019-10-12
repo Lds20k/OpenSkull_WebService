@@ -12,6 +12,7 @@ class Usuario{
     private $imagem;
     private $biografia;
 
+    //construtor
     function __construct($id, $dataNascimento, $tipo, $email, $senha, $nome, $sobrenome, $instituicao, $imagem, $biografia){
         $this->id = $id;
         $this->dataNascimento = $dataNascimento;

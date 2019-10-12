@@ -53,7 +53,7 @@ abstract class CursoDAO{
 
 	public static function consultarUm($id){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'SELECT * FROM curso WHERE ID = ?';
+		$SQL = 'SELECT * FROM '.CursoDAO::$tabela.' WHERE ID = ?';
 		$stmt = $conexao->prepare($SQL);
 		$stmt->bindParam(1, $id);
 
@@ -62,22 +62,19 @@ abstract class CursoDAO{
         if($stmt->rowCount() < 1)
             throw new Exception('Curso não encontrado!');
 
-		$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		$coluna = $stmt->fetch(PDO::FETCH_ASSOC);
 		
 		$cursos = Array();
-        foreach ($coluna as $chave => $valor) {
-	        $criador =  ControleUsuario::consultarUm($valor['Criador']);
-        	$criador =  $criador['usuario'];
-        	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco']);
-        	array_push($cursos, $curso->converter());
-        }    
-		return ['status' => true, 'cursos' => $cursos];
+	    $criador =  ControleUsuario::consultarUm($coluna['Criador']);
+       	$criador =  $criador['usuario'];
+        $criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
+        $curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco']);
+		return ['status' => true, 'curso' => $curso->converter()];
 	}
 
 	public static function deletar($id){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'DELETE FROM curso WHERE ID = ?';
+		$SQL = 'DELETE FROM '.CursoDAO::$tabela.' WHERE ID = ?';
 
 		$stmt = $conexao->prepare($SQL);
 		$stmt->bindParam(1, $id);
@@ -86,5 +83,9 @@ abstract class CursoDAO{
 			throw new Exception('Erro ao deletar curso no banco!');
 
 		return ['status' => true];
+	}
+
+	public static function atualizar(){
+
 	}
 }	

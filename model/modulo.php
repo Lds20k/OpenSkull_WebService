@@ -6,6 +6,8 @@ class Modulo{
 	private $curso;
 	private $nome;
 
+
+	//construtor
 	function __construct($id, Curso $curso, $nome){
 		$this->id = $id;
 		$this->curso = $curso;
@@ -38,5 +40,16 @@ class Modulo{
 
 	public function setNome($nome){
 		$this->nome = $nome;
+	}
+
+	//Outros metodos
+
+	public function converter(){
+		$modulo        = new stdClass;
+		$modulo->id    = $this->id;
+		$modulo->curso = $this->curso->converter();
+		$modulo->nome  = $this->nome;
+
+		return $modulo;
 	}
 }
