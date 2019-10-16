@@ -13,8 +13,6 @@ require '../control/controleLicao.php';
 
 $app = AppFactory::create();
 
-//$app->addErrorMiddleware(false, true, true);
-
 $app->group('/api', function(RouteCollectorProxy $group){
     
     $group->group('/usuario', function(RouteCollectorProxy $group){
