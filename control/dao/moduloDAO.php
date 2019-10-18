@@ -2,17 +2,18 @@
 include_once '../connect/conexao.php'; 
 include_once '../model/curso.php';
 include_once '../model/modulo.php';
+include_once '../model/licao.php';
 
 abstract class ModuloDAO{
 	public static $tabela = 'modulo';
 
-	public static function inserir(Modulo $modulo){
+	public static function inserir($args){
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'INSERT INTO '.ModuloDAO::$tabela.' (ID_Curso, Nome) VALUES (?, ?) ';
 		$stmt = $conexao->prepare($SQL);
-		$modulo = $modulo->converter();
-		$stmt->bindParam(1, $modulo->curso->id);
-		$stmt->bindParam(2, $modulo->nome);
+
+		$stmt->bindParam(1, $args->idCurso);
+		$stmt->bindParam(2, $args->nome);
 
 		if(!$stmt->execute()){
 			throw new Exception('Erro ao inserir modulo no banco!');
@@ -31,18 +32,19 @@ abstract class ModuloDAO{
             throw new Exception('Erro ao consultar modulo no banco!');
         if($stmt->rowCount() < 1)
             throw new Exception('Nenhum modulo registrado!');
-
-        $curso = ControleCurso::consultarUm($idCurso);
-		$criador = $curso['curso']->criador;
-		$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-		$curso = $curso['curso'];
-		$curso = new Curso($curso->id, $criador, $curso->nome,  $curso->imagem, $curso->horas, $curso->descricao, $curso->preco);
         
 		$modulos = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($coluna as $chave => $valor){
-        	$modulo = new Modulo($valor['ID'], $curso, $valor['Nome']);
-        	array_push($modulos, $modulo->converter());
+        	$licao = ControleLicao::consultar($valor['ID']);
+        	if($licao['status'] == true){
+        		$licao = $licao['licoes'];
+	        	foreach ($licao as $key => $value) {
+	        		$licao = new Licao($value->id, $value->nome, $value->conteudo);
+	        		$modulo = new Modulo($valor['ID'], $licao, $valor['Nome']);
+	        		array_push($modulos, $modulo->converter());
+	        	}
+        	}
         }
         return ['status' => true, 'modulos' => $modulos];
 	}
@@ -61,14 +63,21 @@ abstract class ModuloDAO{
 
         $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
 
-       	$curso = ControleCurso::consultarUm($coluna['ID_Curso']);
-       	$curso = $curso['curso'];
-       	$criador = $curso->criador;
-       	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-       	$curso = new Curso($curso->id, $criador, $curso->nome, $curso->imagem, $curso->horas, $curso->descricao, $curso->preco);
-       	$modulo = new Modulo($coluna['ID'], $curso, $coluna['Nome']);
+        $licao = ControleLicao::consultar($coluna['ID']);
 
-       	return ['status' => true, 'modulo' => $modulo->converter()];
+        $modulos = Array();
+        if($licao['status'] == true){
+        	$licao = $licao['licoes'];
+	        foreach ($licao as $chave => $valor) {
+		        $licao = new Licao($valor->id, $valor->nome, $valor->conteudo);
+		        $modulo = new Modulo($coluna['ID'], $licao, $coluna['Nome']);  
+		        array_push($modulos, $modulo->converter());
+		    }
+		}else{
+	        $licao = new Licao(null, null, null);
+	        $modulo = new Modulo($coluna['ID'], $licao, $coluna['Nome']);
+	   }
+       	return ['status' => true, 'modulo' => $modulos];
 	}
 
 	public static function deletar(){

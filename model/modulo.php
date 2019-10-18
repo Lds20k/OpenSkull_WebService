@@ -1,16 +1,16 @@
 <?php
-include_once 'curso.php';
+include_once 'licao.php';
 
 class Modulo{
 	private $id;
-	private $curso;
+	private $licao;
 	private $nome;
 
 
 	//construtor
-	function __construct($id, Curso $curso, $nome){
+	function __construct($id, Licao $licao, $nome){
 		$this->id = $id;
-		$this->curso = $curso;
+		$this->licao = $licao;
 		$this->nome = $nome;
 	}
 
@@ -21,7 +21,7 @@ class Modulo{
 	}
 
 	public function getCurso(){
-		return $this->curso;
+		return $this->licao;
 	}
 
 	public function getNome(){
@@ -34,8 +34,8 @@ class Modulo{
 		$this->id = $id;
 	}
 
-	public function setCurso(Curso $curso){
-		$this->curso = $curso;
+	public function setLicao(Licao $licao){
+		$this->licao = $licao;
 	}
 
 	public function setNome($nome){
@@ -47,7 +47,7 @@ class Modulo{
 	public function converter(){
 		$modulo        = new stdClass;
 		$modulo->id    = $this->id;
-		$modulo->curso = $this->curso->converter();
+		$modulo->licao = $this->licao->converter();
 		$modulo->nome  = $this->nome;
 
 		return $modulo;

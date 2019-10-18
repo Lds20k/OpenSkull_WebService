@@ -1,5 +1,6 @@
 <?php
 include_once 'usuario.php';
+include_once 'modulo.php';
 
 class Curso{
 	//atribustos
@@ -10,10 +11,11 @@ class Curso{
 	private $horas;
 	private $descricao;
 	private $preco;
+	private $modulo;
 
 
 	//construtor
-	function __construct($id, Usuario $criador, $nome, $imagem, $horas, $descricao, $preco){
+	function __construct($id, Usuario $criador, $nome, $imagem, $horas, $descricao, $preco, Modulo $modulo){
 		$this->id        = $id;
 		$this->criador   = $criador;
 		$this->nome      = $nome;
@@ -21,6 +23,7 @@ class Curso{
 		$this->horas     = $horas;
 		$this->descricao = $descricao;
 		$this->preco     = $preco;
+		$this->modulo    = $modulo;
 	}
 
 
@@ -54,6 +57,10 @@ class Curso{
 		$this->$preco = $preco;
 	}
 
+	function setModulo(Modulo $modulo){
+		$this->$modulo = $modulo;
+	}
+
 
 	//Getters
 	
@@ -85,6 +92,10 @@ class Curso{
 		return $preco;
 	}
 
+	function getModulo(){
+		return $modulo;
+	}
+
 	//Outros metodos
 
 	public function converter(){
@@ -96,6 +107,7 @@ class Curso{
 		$curso->horas     = $this->horas;
 		$curso->descricao = $this->descricao;
 		$curso->preco     = $this->preco;
+		$curso->modulo     = $this->modulo->converter();
 		return $curso;
 	}
 }

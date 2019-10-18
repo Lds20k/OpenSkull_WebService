@@ -1,7 +1,9 @@
 <?php
 include_once '../connect/conexao.php';
 include_once '../model/curso.php';
+include_once '../model/modulo.php';
 include_once '../control/controleUsuario.php';
+//include_once '../control/controleModulo.php';
 
 abstract class CursoDAO{
 	private static $tabela = 'curso';
@@ -43,9 +45,17 @@ abstract class CursoDAO{
         foreach ($coluna as $chave => $valor) {
         	$criador =  ControleUsuario::consultarUm($valor['Criador']);
         	$criador =  $criador['usuario'];
+
+        	$modulo  =  ControleCurso::consultar($valor['ID']);
+        	$modulo  =  $modulo['modulos'];
+        	var_dump($modulo);
+
         	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
 
-        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco']);
+        	$licao   = new Licao(null, null, null);
+        	$modulo  = new Modulo(null, $licao, null);
+
+        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], $modulo);
         	array_push($cursos, $curso->converter());
         }
         return ['status' => true, 'cursos' => $cursos];
@@ -68,8 +78,36 @@ abstract class CursoDAO{
 	    $criador =  ControleUsuario::consultarUm($coluna['Criador']);
        	$criador =  $criador['usuario'];
         $criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-        $curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco']);
-		return ['status' => true, 'curso' => $curso->converter()];
+
+        $modulo = ControleCurso::consultar($coluna['ID']);
+        $cursos = Array();
+        if($modulo['status'] == true){
+        	$modulo = $modulo['modulos'];
+        	foreach ($modulo as $chave => $valor) {
+        		$licao = ControleLicao::consultar($valor->id);
+        		if($licao['status'] == true){
+        			$licao = $licao['licoes'];
+        			foreach ($licao as $key => $value) {
+        				$licao = new Licao($licao->id, $licao->nome, $licao->conteudo);
+        				$modulo = new Modulo($valor->id, $licao, $valor->nome);
+        				$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
+        				array_push($cursos, $curso->converter());
+        			}
+        		}else{
+        			$licao = new Licao(null, null, null);
+        			$modulo = new Modulo($valor->id, $licao, $valor->nome);
+        			$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
+        			array_push($cursos, $curso->converter());
+        		}
+        	} 
+        }else{
+        	$licao   = new Licao(null, null, null);
+        	$modulo  = new Modulo(null, $licao, null);
+        	$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
+        	array_push($cursos, $curso->converter());
+        }
+        
+		return ['status' => true, 'curso' => $cursos];
 	}
 
 	public static function deletar($id){

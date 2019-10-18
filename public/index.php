@@ -123,6 +123,20 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($licao);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        //Get todos as licoes de um modulo
+        $group->get('/all/{idModulo}', function(Request $request, Response $response, $args) {
+            $licoes = json_encode(ControleLicao::consultar($args['idModulo']));
+            $response->getBody()->write($licoes);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Get uma licao
+        $group->get('/one/{id}', function(Request $request, Response $response, $args) {
+            $licao = json_encode(ControleLicao::consultarUm( $args['id'] ));
+            $response->getBody()->write($licao);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
     });
 });
 

@@ -11,15 +11,7 @@ abstract class ControleModulo{
 		try {
 			if(sizeof($args) == 2){
 				$args     = (object)$args;
-				$curso    = ControleCurso::consultarUm($args->idCurso);
-				$criador  = $curso['curso']->criador;
-				$curso    = $curso['curso'];
-
-				
-				$criador  = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-				$curso    = new Curso($curso->id, $criador, $curso->nome,  $curso->imagem, $curso->horas, $curso->descricao, $curso->preco);
-				$modulo   = new Modulo(null, $curso, $args->nome);
-				$resposta = ModuloDAO::inserir($modulo);
+				$resposta = ModuloDAO::inserir($args);
 			}else{
                 $resposta = ['status' => false];
             }
@@ -38,9 +30,9 @@ abstract class ControleModulo{
 		return $resposta;
 	}
 
-	public static function consultarUm($id/*Modulo*/){
+	public static function consultarUm($id){
 		try{
-			$resposta = ModuloDAO::consultarUm($id/*Modulo*/);
+			$resposta = ModuloDAO::consultarUm($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
 			echo $ex;
