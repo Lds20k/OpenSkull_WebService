@@ -25,6 +25,7 @@ abstract class ControleModulo{
 		try{
 			$resposta = ModuloDAO::consultar($idCurso);
 		}catch(Exception $ex){
+			echo $ex;
 			$resposta = ['status' => false];
 		}
 		return $resposta;

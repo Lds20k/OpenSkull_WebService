@@ -3,14 +3,14 @@ include_once 'licao.php';
 
 class Modulo{
 	private $id;
-	private $licao;
+	private $licoes;
 	private $nome;
 
 
 	//construtor
-	function __construct($id, Licao $licao, $nome){
+	function __construct($id, Array $licoes, $nome){
 		$this->id = $id;
-		$this->licao = $licao;
+		$this->licoes = $licoes;
 		$this->nome = $nome;
 	}
 
@@ -20,8 +20,8 @@ class Modulo{
 		return $this->id;
 	}
 
-	public function getCurso(){
-		return $this->licao;
+	public function getLicoes(){
+		return $this->licoes;
 	}
 
 	public function getNome(){
@@ -34,8 +34,8 @@ class Modulo{
 		$this->id = $id;
 	}
 
-	public function setLicao(Licao $licao){
-		$this->licao = $licao;
+	public function setLicoes(Array $licoes){
+		$this->licoes = $licoes;
 	}
 
 	public function setNome($nome){
@@ -45,10 +45,10 @@ class Modulo{
 	//Outros metodos
 
 	public function converter(){
-		$modulo        = new stdClass;
-		$modulo->id    = $this->id;
-		$modulo->licao = $this->licao->converter();
-		$modulo->nome  = $this->nome;
+		$modulo         = new stdClass;
+		$modulo->id     = $this->id;
+		$modulo->licoes = $this->licoes;
+		$modulo->nome   = $this->nome;
 
 		return $modulo;
 	}

@@ -1,6 +1,5 @@
 <?php 
 include_once 'dao/licaoDAO.php';
-include_once 'controleModulo.php';
 
 abstract class ControleLicao{
 
@@ -32,6 +31,7 @@ abstract class ControleLicao{
 		try{
 			$resposta = LicaoDAO::consultar($idModulo);
 		}catch(Exception $ex){
+			echo $ex;
 			$resposta = ['status' => false];
 		}
 		return $resposta;

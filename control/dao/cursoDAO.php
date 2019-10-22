@@ -43,19 +43,23 @@ abstract class CursoDAO{
         $cursos = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($coluna as $chave => $valor) {
-        	$criador =  ControleUsuario::consultarUm($valor['Criador']);
-        	$criador =  $criador['usuario'];
+			//Procura usuario
+			$usuario = ControleUsuario::consultarUm($valor['Criador']);
+			if(!$usuario['status']){
+				throw new Exception('Usuario criador do curso não encontrado!');
+			}
+			$usuario = $usuario['usuario'];
+			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia);
+			
+			//Procura modulos
+			$modulos = ControleModulo::consultar($valor['ID']);
+			if(!$modulos['status']){
+				throw new Exception('Erro no banco ao procurar os modulos do curso!');
+			}
+			$modulos = $modulos['modulos'];
 
-        	$modulo  =  ControleCurso::consultar($valor['ID']);
-        	$modulo  =  $modulo['modulos'];
-        	var_dump($modulo);
-
-        	$criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
-
-        	$licao   = new Licao(null, null, null);
-        	$modulo  = new Modulo(null, $licao, null);
-
-        	$curso = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], $modulo);
+			//Criar curso
+			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], $modulos);
         	array_push($cursos, $curso->converter());
         }
         return ['status' => true, 'cursos' => $cursos];
@@ -73,41 +77,25 @@ abstract class CursoDAO{
             throw new Exception('Curso não encontrado!');
 
 		$coluna = $stmt->fetch(PDO::FETCH_ASSOC);
-		
-		$cursos = Array();
-	    $criador =  ControleUsuario::consultarUm($coluna['Criador']);
-       	$criador =  $criador['usuario'];
-        $criador = new Usuario($criador->id, $criador->dataNascimento, $criador->tipo, $criador->email, null, $criador->nome, $criador->sobrenome, $criador->instituicao, $criador->imagem, $criador->biografia);
 
-        $modulo = ControleCurso::consultar($coluna['ID']);
-        $cursos = Array();
-        if($modulo['status'] == true){
-        	$modulo = $modulo['modulos'];
-        	foreach ($modulo as $chave => $valor) {
-        		$licao = ControleLicao::consultar($valor->id);
-        		if($licao['status'] == true){
-        			$licao = $licao['licoes'];
-        			foreach ($licao as $key => $value) {
-        				$licao = new Licao($licao->id, $licao->nome, $licao->conteudo);
-        				$modulo = new Modulo($valor->id, $licao, $valor->nome);
-        				$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
-        				array_push($cursos, $curso->converter());
-        			}
-        		}else{
-        			$licao = new Licao(null, null, null);
-        			$modulo = new Modulo($valor->id, $licao, $valor->nome);
-        			$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
-        			array_push($cursos, $curso->converter());
-        		}
-        	} 
-        }else{
-        	$licao   = new Licao(null, null, null);
-        	$modulo  = new Modulo(null, $licao, null);
-        	$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulo);
-        	array_push($cursos, $curso->converter());
-        }
-        
-		return ['status' => true, 'curso' => $cursos];
+		//Procura usuario
+		$usuario = ControleUsuario::consultarUm($coluna['Criador']);
+		if(!$usuario['status']){
+			throw new Exception('Usuario criador do curso não encontrado!');
+		}
+       	$usuario = $usuario['usuario'];
+        $criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia);
+		
+		//Procura modulos
+		$modulos = ControleModulo::consultar($coluna['ID']);
+		if(!$modulos['status']){
+			throw new Exception('Erro no banco ao procurar os modulos do curso!');
+		}
+		$modulos = $modulos['modulos'];
+
+		//Criar curso
+		$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], $modulos);
+		return ['status' => true, 'curso' => $curso->converter()];
 	}
 
 	public static function deletar($id){

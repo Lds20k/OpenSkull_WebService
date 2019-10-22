@@ -1,5 +1,5 @@
 <?php
-include_once '../connect/conexao.php'; 
+include_once '../connect/conexao.php';
 include_once '../model/curso.php';
 include_once '../model/modulo.php';
 include_once '../model/licao.php';
@@ -30,22 +30,19 @@ abstract class ModuloDAO{
 
 		if(!$stmt->execute())
             throw new Exception('Erro ao consultar modulo no banco!');
-        if($stmt->rowCount() < 1)
-            throw new Exception('Nenhum modulo registrado!');
-        
+
 		$modulos = Array();
-        $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($coluna as $chave => $valor){
-        	$licao = ControleLicao::consultar($valor['ID']);
-        	if($licao['status'] == true){
-        		$licao = $licao['licoes'];
-	        	foreach ($licao as $key => $value) {
-	        		$licao = new Licao($value->id, $value->nome, $value->conteudo);
-	        		$modulo = new Modulo($valor['ID'], $licao, $valor['Nome']);
-	        		array_push($modulos, $modulo->converter());
-	        	}
-        	}
-        }
+		$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($coluna as $chave => $valor){
+			$licoes = ControleLicao::consultar($valor['ID']);
+			if(!$licoes['status'])
+				throw new Exception('Erro ao consultar lições do modulo!');
+			$licoes = $licoes['licoes'];
+			
+			$modulo = new Modulo($valor['ID'], $licoes, $valor['Nome']);
+			array_push($modulos, $modulo->converter());
+		}
+		
         return ['status' => true, 'modulos' => $modulos];
 	}
 
@@ -76,8 +73,8 @@ abstract class ModuloDAO{
 		}else{
 	        $licao = new Licao(null, null, null);
 	        $modulo = new Modulo($coluna['ID'], $licao, $coluna['Nome']);
-	   }
-       	return ['status' => true, 'modulo' => $modulos];
+	  	}
+    	return ['status' => true, 'modulo' => $modulos];
 	}
 
 	public static function deletar(){

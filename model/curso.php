@@ -11,11 +11,11 @@ class Curso{
 	private $horas;
 	private $descricao;
 	private $preco;
-	private $modulo;
+	private $modulos;
 
 
 	//construtor
-	function __construct($id, Usuario $criador, $nome, $imagem, $horas, $descricao, $preco, Modulo $modulo){
+	function __construct($id, Usuario $criador, $nome, $imagem, $horas, $descricao, $preco, Array $modulos){
 		$this->id        = $id;
 		$this->criador   = $criador;
 		$this->nome      = $nome;
@@ -23,7 +23,7 @@ class Curso{
 		$this->horas     = $horas;
 		$this->descricao = $descricao;
 		$this->preco     = $preco;
-		$this->modulo    = $modulo;
+		$this->modulos   = $modulos;
 	}
 
 
@@ -57,8 +57,8 @@ class Curso{
 		$this->$preco = $preco;
 	}
 
-	function setModulo(Modulo $modulo){
-		$this->$modulo = $modulo;
+	function setModulo(Array $modulos){
+		$this->$modulos = $modulos;
 	}
 
 
@@ -92,12 +92,16 @@ class Curso{
 		return $preco;
 	}
 
-	function getModulo(){
-		return $modulo;
+	function getModulos(){
+		return $modulos;
 	}
 
 	//Outros metodos
 
+	/*
+	* Converte todos os atributos da classe
+	* Curso  em  atributos de uma  stdClass
+	*/
 	public function converter(){
 		$curso            = new stdClass;
 		$curso->id        = $this->id;
@@ -107,7 +111,10 @@ class Curso{
 		$curso->horas     = $this->horas;
 		$curso->descricao = $this->descricao;
 		$curso->preco     = $this->preco;
-		$curso->modulo     = $this->modulo->converter();
+		$curso->modulos	  = array();
+		foreach ($this->modulos as $key => $modulo) {
+			array_push($curso->modulos, $modulo);
+		}
 		return $curso;
 	}
 }

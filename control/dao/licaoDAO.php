@@ -27,21 +27,18 @@ abstract class LicaoDAO{
 	public static function consultar($idModulo){
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'SELECT * FROM '.LicaoDAO::$tabela.' WHERE ID_Modulo = ?';
+		
 		$stmt = $conexao->prepare($SQL);
-
 		$stmt->bindParam(1, $idModulo);
 
 		if(!$stmt->execute())
-            throw new Exception('Erro ao consultar modulo no banco!');
-        if($stmt->rowCount() < 1)
-            throw new Exception('Nenhum modulo registrado!');
-
+			throw new Exception('Erro ao consultar lição no banco!');
+			
         $licoes = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($coluna as $chave => $valor) {
          	$licao = new Licao($valor['ID'], $valor['Nome'], $valor['Conteudo']);
-         	$licao = $licao->converter();
-         	array_push($licoes, $licao);
+         	array_push($licoes, $licao->converter());
         }
         return ['status' => true, 'licoes' => $licoes];
 	}
