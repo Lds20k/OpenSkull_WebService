@@ -49,17 +49,8 @@ abstract class CursoDAO{
 				throw new Exception('Usuario criador do curso não encontrado!');
 			}
 			$usuario = $usuario['usuario'];
-			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia);
-			
-			//Procura modulos
-			$modulos = ControleModulo::consultar($valor['ID']);
-			if(!$modulos['status']){
-				throw new Exception('Erro no banco ao procurar os modulos do curso!');
-			}
-			$modulos = $modulos['modulos'];
-
-			//Criar curso
-			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], $modulos);
+			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia, null);
+			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], /*$modulos*/ null);
         	array_push($cursos, $curso->converter());
         }
         return ['status' => true, 'cursos' => $cursos];

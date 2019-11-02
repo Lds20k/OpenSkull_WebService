@@ -15,7 +15,7 @@ class Curso{
 
 
 	//construtor
-	function __construct($id, Usuario $criador, $nome, $imagem, $horas, $descricao, $preco, Array $modulos){
+	function __construct($id = null, Usuario $criador = null, $nome = null, $imagem = null, $horas = null, $descricao = null, $preco = null, Array $modulos = null){
 		$this->id        = $id;
 		$this->criador   = $criador;
 		$this->nome      = $nome;
@@ -105,15 +105,22 @@ class Curso{
 	public function converter(){
 		$curso            = new stdClass;
 		$curso->id        = $this->id;
-		$curso->criador   = $this->criador->converter();
+		if(is_null($this->criador))
+			$curso->criador = null;
+		else
+			$curso->criador   = $this->criador->converter();
 		$curso->nome      = $this->nome;
 		$curso->imagem    = $this->imagem;
 		$curso->horas     = $this->horas;
 		$curso->descricao = $this->descricao;
 		$curso->preco     = $this->preco;
-		$curso->modulos	  = array();
-		foreach ($this->modulos as $key => $modulo) {
-			array_push($curso->modulos, $modulo);
+		if(is_null($this->modulos))
+			$curso->modulos	= null;
+		else{
+			$curso->modulos	= array();
+			foreach ($this->modulos as $key => $modulo) {
+				array_push($curso->modulos, $modulo);
+			}
 		}
 		return $curso;
 	}

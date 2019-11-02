@@ -11,19 +11,21 @@ class Usuario{
     private $instituicao;
     private $imagem;
     private $biografia;
+    private $cursos;
 
     //construtor
-    function __construct($id, $dataNascimento, $tipo, $email, $senha, $nome, $sobrenome, $instituicao, $imagem, $biografia){
-        $this->id = $id;
+    function __construct($id = null, $dataNascimento = null, $tipo = null, $email = null, $senha = null, $nome = null, $sobrenome = null, $instituicao = null, $imagem = null, $biografia = null, Array $cursos = null){
+        $this->id             = $id;
         $this->dataNascimento = $dataNascimento;
-        $this->tipo = $tipo;
-        $this->email = $email;
-        $this->senha = $senha;
-        $this->nome = $nome;
-        $this->sobrenome = $sobrenome;
-        $this->instituicao = $instituicao;
-        $this->imagem = $imagem;
-        $this->biografia = $biografia;
+        $this->tipo           = $tipo;
+        $this->email          = $email;
+        $this->senha          = $senha;
+        $this->nome           = $nome;
+        $this->sobrenome      = $sobrenome;
+        $this->instituicao    = $instituicao;
+        $this->imagem         = $imagem;
+        $this->biografia      = $biografia;
+        $this->cursos         = $cursos;
     }
 
     //Getters
