@@ -105,4 +105,35 @@ abstract class CursoDAO{
 	public static function atualizar(){
 
 	}
+
+	public static function consultarPorUsuario($idUsuario){
+		$conexao = ConexaoPDO::getConexao();
+		
+		$SQL = 'SELECT * FROM '.CursoDAO::$tabela.' WHERE Criador = ?';
+
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $idUsuario);
+
+		if(!$stmt->execute()){
+            throw new Exception('Erro ao consultar curso no banco!');
+        }
+        if($stmt->rowCount() < 1){
+            throw new Exception('Nenhum curso registrado!');
+        }
+
+        $cursos = Array();
+        $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($coluna as $chave => $valor) {
+			//Procura usuario
+			$usuario = ControleUsuario::consultarUm($valor['Criador']);
+			if(!$usuario['status']){
+				throw new Exception('Usuario criador do curso não encontrado!');
+			}
+			$usuario = $usuario['usuario'];
+			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia, null);
+			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], /*$modulos*/ null);
+        	array_push($cursos, $curso->converter());
+        }
+        return ['status' => true, 'cursos' => $cursos];
+	}
 }	

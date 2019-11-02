@@ -89,6 +89,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($resposta);
             return $response;
         });
+
+        //Consultar todos os cursos feito pelo usuario
+        $group->get('/usuario/{key}', function(Request $request, Response $response, $args) {
+            $cursos = json_encode(ControleCurso::consultarPorUsuario( $args['key'] ) );
+            $response->getBody()->write($cursos);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
     });
 
     $group->group('/modulo', function(RouteCollectorProxy $group){

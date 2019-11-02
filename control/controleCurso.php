@@ -57,12 +57,24 @@ abstract class ControleCurso{
 			$resposta = CursoDAO::deletar($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
-			echo $ex;
 		}
 		return $resposta;
 	}
 
 	public static function atualizar($id, $jwt, $criador = null, $nome = null, $imagem = null, $horas = null, $descricao = null, $preco = null){
 		
+	}
+
+	public static function consultarPorUsuario($key){
+		try{
+			if(OpenSkullJWT::verificar($key)){
+                $key = OpenSkullJWT::decodificar($key)->dados->id;
+            }
+			$resposta = CursoDAO::consultarPorUsuario($key);
+			
+		}catch(Exception $ex){
+			$resposta = ['status' => false];
+		}
+		return $resposta;
 	}
 }
