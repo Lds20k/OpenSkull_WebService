@@ -1,12 +1,12 @@
 <?php
-include_once '../connect/conexao.php';
-include_once '../model/curso.php';
-include_once '../model/modulo.php';
-include_once '../control/controleUsuario.php';
+require_once(__DIR__ . '/../../connect/conexao.php');
+require_once(__DIR__ . '/../../model/curso.php');
+require_once(__DIR__ . '/../../model/modulo.php');
+require_once(__DIR__ . '/../controleUsuario.php');
 //include_once '../control/controleModulo.php';
 
 abstract class CursoDAO{
-	private static $tabela = 'curso';
+	public static $tabela = 'curso';
 
 	public static function inserir(Curso $curso){
 		$conexao = ConexaoPDO::getConexao();
@@ -50,7 +50,7 @@ abstract class CursoDAO{
 			}
 			$usuario = $usuario['usuario'];
 			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia, null);
-			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], /*$modulos*/ null);
+			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], null);
         	array_push($cursos, $curso->converter());
         }
         return ['status' => true, 'cursos' => $cursos];
@@ -131,7 +131,7 @@ abstract class CursoDAO{
 			}
 			$usuario = $usuario['usuario'];
 			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia, null);
-			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], /*$modulos*/ null);
+			$curso  = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], null);
         	array_push($cursos, $curso->converter());
         }
         return ['status' => true, 'cursos' => $cursos];

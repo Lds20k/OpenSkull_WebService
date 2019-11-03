@@ -1,10 +1,10 @@
 <?php
 
-include_once 'controleCurso.php';
-include_once '../model/curso.php';
-include_once '../model/modulo.php';
-include_once '../model/usuario.php';
-include_once 'dao/moduloDAO.php';
+require_once(__DIR__ . '/controleCurso.php');
+require_once(__DIR__ . '/../model/curso.php');
+require_once(__DIR__ . '/../model/modulo.php');
+require_once(__DIR__ . '/../model/usuario.php');
+require_once(__DIR__ . '/dao/moduloDAO.php');
 
 abstract class ControleModulo{
 	public static function inserir($args){

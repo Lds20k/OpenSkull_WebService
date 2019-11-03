@@ -1,10 +1,11 @@
 <?php
-include_once '../connect/conexao.php';
-include_once '../model/usuario.php';
-include_once '../model/jwt.php';
+require_once(__DIR__ . '/../../connect/conexao.php');
+require_once(__DIR__ . '/../../model/usuario.php');
+require_once(__DIR__ . '/../../model/jwt.php');
 
 abstract class UsuarioDAO{
     public static $tabela = 'usuario';
+    public static $tabelaPossui = 'possui';
 
     public static function inserir(Usuario $usuario){
         $conexao = ConexaoPDO::getConexao();
@@ -197,5 +198,35 @@ abstract class UsuarioDAO{
             throw new Exception('Erro ao atualizar a biografia do usuario!');
 
         return ['status' => true];
+    }
+
+    public static function consultarCursos($key){
+        $conexao = ConexaoPDO::getConexao();
+        $SQL = 'SELECT '.CursoDAO::$tabela.'.*, '.UsuarioDAO::$tabelaPossui.'.Ativado FROM '.UsuarioDAO::$tabelaPossui.' INNER JOIN '.CursoDAO::$tabela.' ON possui.ID_Curso = curso.ID WHERE possui.ID_Usuario = ?';
+        
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $key);
+
+		if(!$stmt->execute())
+			throw new Exception('Erro ao consultar curso no banco!');
+        if($stmt->rowCount() < 1)
+            throw new Exception('Curso não encontrado!');
+
+		$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $cursos = Array();
+        foreach ($coluna as $chave => $valor) {
+			//Procura usuario
+			$usuario = ControleUsuario::consultarUm($valor['Criador']);
+			if(!$usuario['status']){
+				throw new Exception('Usuario criador do curso não encontrado!');
+			}
+			$usuario = $usuario['usuario'];
+			$criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia, null);
+            $curso   = new Curso($valor['ID'], $criador, $valor['Nome'], $valor['Imagem'], $valor['Horas'], $valor['Descricao'], $valor['Preco'], null);
+            $curso   = $curso->converter();
+            $curso->ativado = $valor['Ativado'] ? true : false;
+        	array_push($cursos, $curso);
+        }
+		return ['status' => true, 'cursos' => $cursos];
     }
 }

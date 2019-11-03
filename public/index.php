@@ -4,12 +4,12 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 
-require __DIR__ . '/../vendor/autoload.php';
-
-require '../control/controleUsuario.php';
-require '../control/controleCurso.php';
-require '../control/controleModulo.php';
-require '../control/controleLicao.php';
+require_once(__DIR__ . '/../vendor/autoload.php');
+//Inclui todos os controles
+require_once(__DIR__ . '/../control/controleUsuario.php');
+require_once(__DIR__ . '/../control/controleCurso.php');
+require_once(__DIR__ . '/../control/controleModulo.php');
+require_once(__DIR__ . '/../control/controleLicao.php');
 
 $app = AppFactory::create();
 
@@ -58,6 +58,15 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        $group->group('/curso', function(RouteCollectorProxy $group){
+            $group->get('/{key}', function(Request $request, Response $response, $args) {
+                $cursos = json_encode( ControleUsuario::consultarCursos( $args['key'] ) );
+                $response->getBody()->write($cursos);
+                return $response->withHeader('Content-Type', 'application/json');
+            });
+        });
+
     });
 
     $group->group('/curso', function(RouteCollectorProxy $group){

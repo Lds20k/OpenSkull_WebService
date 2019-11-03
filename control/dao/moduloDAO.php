@@ -1,8 +1,8 @@
 <?php
-include_once '../connect/conexao.php';
-include_once '../model/curso.php';
-include_once '../model/modulo.php';
-include_once '../model/licao.php';
+require_once(__DIR__ . '/../../connect/conexao.php');
+require_once(__DIR__ . '/../../model/curso.php');
+require_once(__DIR__ . '/../../model/modulo.php');
+require_once(__DIR__ . '/../../model/licao.php');
 
 abstract class ModuloDAO{
 	public static $tabela = 'modulo';

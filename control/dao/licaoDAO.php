@@ -1,6 +1,6 @@
 <?php
-include_once '../model/licao.php';
-include_once '../connect/conexao.php';
+require_once(__DIR__ . '/../../model/licao.php');
+require_once(__DIR__ . '/../../connect/conexao.php');
 
 abstract class LicaoDAO{
 	public static $tabela = 'licao';

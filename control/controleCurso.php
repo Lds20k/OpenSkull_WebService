@@ -1,12 +1,12 @@
 <?php
 use \Firebase\JWT\JWT;
 
-include_once 'controle.php';
-include_once 'controleUsuario.php';
-include_once '../model/usuario.php';
-include_once '../model/curso.php';
-include_once 'dao/cursoDAO.php';
-include_once '../model/jwt.php';
+require_once(__DIR__ . '/controle.php');
+require_once(__DIR__ . '/controleUsuario.php');
+require_once(__DIR__ . '/../model/usuario.php');
+require_once(__DIR__ . '/../model/curso.php');
+require_once(__DIR__ . '/dao/cursoDAO.php');
+require_once(__DIR__ . '/../model/jwt.php');
 
 abstract class ControleCurso{
 	public static function inserir($args){

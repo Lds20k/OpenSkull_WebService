@@ -1,8 +1,8 @@
 <?php
-include_once 'controle.php';
-include_once 'dao/usuarioDAO.php';
-include_once '../model/usuario.php';
-include_once '../model/jwt.php';
+require_once(__DIR__ . '/controle.php');
+require_once(__DIR__ . '/dao/usuarioDAO.php');
+require_once(__DIR__ . '/../model/usuario.php');
+require_once(__DIR__ . '/../model/jwt.php');
 
 abstract class ControleUsuario{
 
@@ -64,7 +64,7 @@ abstract class ControleUsuario{
             $resposta = ['status' => false];
         }
         return $resposta;
-     }
+    }
 
     public static function deletar($id){
         try{
@@ -102,6 +102,19 @@ abstract class ControleUsuario{
             $resposta = UsuarioDAO::atualizar($usuario);
         }catch(Exception $ex){
             $resposta = ['status' => false];
+        }
+        return $resposta;
+    }
+
+    public static function consultarCursos($key){
+        try{
+            if(OpenSkullJWT::verificar($key)){
+                $key = OpenSkullJWT::decodificar($key)->dados->id;
+            }
+            $resposta = UsuarioDAO::consultarCursos($key);
+        }catch(Exception $ex){
+            $resposta = ['status' => false];
+            echo $ex;
         }
         return $resposta;
     }

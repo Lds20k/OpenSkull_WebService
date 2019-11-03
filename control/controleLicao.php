@@ -1,5 +1,5 @@
 <?php 
-include_once 'dao/licaoDAO.php';
+require_once(__DIR__ . '/dao/licaoDAO.php');
 
 abstract class ControleLicao{
 
