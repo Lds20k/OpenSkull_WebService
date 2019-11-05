@@ -28,7 +28,8 @@ abstract class CursoDAO{
 		//Seleciona o ultimo curso
 		$SQL = 'SELECT * FROM '.CursoDAO::$tabela.' WHERE ID = ?';
 		$stmt = $conexao->prepare($SQL);
-		$stmt->bindParam(1, $stmt->lastInsertId());
+		$lastId = $conexao->lastInsertId();
+		$stmt->bindParam(1, $lastId);
 
 		if(!$stmt->execute())
 			throw new Exception('Erro ao consultar curso no banco!');

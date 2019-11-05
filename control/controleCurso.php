@@ -20,9 +20,7 @@ abstract class ControleCurso{
             	$dados = OpenSkullJWT::decodificar($args->jwt);
 				$usuario = ControleUsuario::consultarUm($dados->dados->id);
 				$usuario = new Usuario($usuario['usuario']->id, null, null, null, null, null, null, null, null, null);
-				$licao   = Array(new Licao(null, null, null));
-        		$modulo  = new Modulo(null, $licao, null);
-				$curso = new Curso(null, $usuario, $args->nome, $args->imagem, $args->horas, $args->descricao, $args->preco, $modulo);
+				$curso = new Curso(null, $usuario, $args->nome, $args->imagem, $args->horas, $args->descricao, $args->preco, null);
 				$resposta = CursoDAO::inserir($curso);
             }else{
             	$resposta = ['status' => false];
