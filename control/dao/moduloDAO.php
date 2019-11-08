@@ -11,7 +11,7 @@ abstract class ModuloDAO{
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'INSERT INTO '.ModuloDAO::$tabela.' (ID_Curso, Nome) VALUES (?, ?) ';
 		$stmt = $conexao->prepare($SQL);
-		$curso->converter();
+		$curso = $curso->converter();
 
 		$stmt->bindParam(1, $curso->id);
 		$stmt->bindParam(2, $curso->modulo[0]->nome);
