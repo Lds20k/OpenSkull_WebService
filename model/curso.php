@@ -61,6 +61,13 @@ class Curso{
 		$this->$modulos = $modulos;
 	}
 
+	function addModulo(Modulo $modulo){
+		if(!is_array($this->modulos)){
+			$this->modulos = Array();
+		}
+		array_push($this->modulos, $modulo);
+	}
+
 
 	//Getters
 	

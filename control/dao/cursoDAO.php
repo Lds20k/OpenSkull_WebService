@@ -8,6 +8,22 @@ require_once(__DIR__ . '/../controleUsuario.php');
 abstract class CursoDAO{
 	public static $tabela = 'curso';
 
+	public static function verificarCriador($curso){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'SELECT ID FROM '.CursoDAO::$tabela.' WHERE ID = ? AND Criador = ?';
+		$curso = $curso->converter();
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $curso->id);
+		$stmt->bindParam(2, $curso->criador->id);
+		if(!$stmt->execute()){
+			throw new Exception('Erro ao consultar no banco!');
+		}
+		if($stmt->rowCount() < 1){
+            throw new Exception('Não tem permição para isto!');
+		}
+		return true;
+	}
+
 	public static function inserir(Curso $curso){
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'INSERT INTO '.CursoDAO::$tabela.' (Criador, Nome, Imagem, Horas, Descricao, Preco) 

@@ -6,7 +6,6 @@ class Modulo{
 	private $licoes;
 	private $nome;
 
-
 	//construtor
 	function __construct($id = null, Array $licoes = null, $nome = null){
 		$this->id     = $id;

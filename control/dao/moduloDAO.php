@@ -7,13 +7,14 @@ require_once(__DIR__ . '/../../model/licao.php');
 abstract class ModuloDAO{
 	public static $tabela = 'modulo';
 
-	public static function inserir($args){
+	public static function inserir(Curso $curso){
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'INSERT INTO '.ModuloDAO::$tabela.' (ID_Curso, Nome) VALUES (?, ?) ';
 		$stmt = $conexao->prepare($SQL);
+		$curso->converter();
 
-		$stmt->bindParam(1, $args->idCurso);
-		$stmt->bindParam(2, $args->nome);
+		$stmt->bindParam(1, $curso->id);
+		$stmt->bindParam(2, $curso->modulo[0]->nome);
 
 		if(!$stmt->execute()){
 			throw new Exception('Erro ao inserir modulo no banco!');

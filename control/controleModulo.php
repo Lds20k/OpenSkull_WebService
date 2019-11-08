@@ -9,9 +9,17 @@ require_once(__DIR__ . '/dao/moduloDAO.php');
 abstract class ControleModulo{
 	public static function inserir($args){
 		try {
-			if(sizeof($args) == 2){
+			if(sizeof($args) == 3){
 				$args     = (object)$args;
-				$resposta = ModuloDAO::inserir($args);
+				$dados    = OpenSkullJWT::decodificar($args->jwt);
+
+				$usuario  = new Usuario($dados->dados->id);
+				$curso	  = new Curso($args->idCurso, $usuario);
+				CursoDAO::verificarCriador($curso);
+				$modulo   = new Modulo(null, null, $args->nome);
+				$curso->addModulo($modulo);
+				
+				$resposta = ModuloDAO::inserir($modulo);
 			}else{
                 $resposta = ['status' => false];
             }
