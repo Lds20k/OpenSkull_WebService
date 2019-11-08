@@ -26,7 +26,7 @@ abstract class LicaoDAO{
 	
 	public static function consultar($idModulo){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'SELECT * FROM '.LicaoDAO::$tabela.' WHERE ID_Modulo = ?';
+		$SQL = 'SELECT ID, Nome FROM '.LicaoDAO::$tabela.' WHERE ID_Modulo = ?';
 		
 		$stmt = $conexao->prepare($SQL);
 		$stmt->bindParam(1, $idModulo);
@@ -37,7 +37,7 @@ abstract class LicaoDAO{
         $licoes = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($coluna as $chave => $valor) {
-         	$licao = new Licao($valor['ID'], $valor['Nome'], $valor['Conteudo']);
+         	$licao = new Licao($valor['ID'], $valor['Nome'], null);
          	array_push($licoes, $licao->converter());
         }
         return ['status' => true, 'licoes' => $licoes];

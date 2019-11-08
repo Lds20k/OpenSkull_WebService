@@ -18,8 +18,9 @@ abstract class ModuloDAO{
 		if(!$stmt->execute()){
 			throw new Exception('Erro ao inserir modulo no banco!');
 		}
+		$modulo = new Modulo($conexao->lastInsertId(), null, $args->nome);
 
-		return ['status' => true];
+		return ['status' => true, 'modulo' => $modulo->converter()];
 	}
 
 	public static function consultar($idCurso){

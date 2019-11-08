@@ -9,9 +9,9 @@ class Modulo{
 
 	//construtor
 	function __construct($id, Array $licoes, $nome){
-		$this->id = $id;
+		$this->id     = $id;
 		$this->licoes = $licoes;
-		$this->nome = $nome;
+		$this->nome   = $nome;
 	}
 
 	//Getters

@@ -24,29 +24,8 @@ abstract class CursoDAO{
 		if(!$stmt->execute()){
 			throw new Exception('Erro ao inserir no banco!');
 		}
-
-		//Seleciona o ultimo curso
-		$SQL = 'SELECT * FROM '.CursoDAO::$tabela.' WHERE ID = ?';
-		$stmt = $conexao->prepare($SQL);
-		$lastId = $conexao->lastInsertId();
-		$stmt->bindParam(1, $lastId);
-
-		if(!$stmt->execute())
-			throw new Exception('Erro ao consultar curso no banco!');
-        if($stmt->rowCount() < 1)
-            throw new Exception('Curso não encontrado!');
-
-		$coluna = $stmt->fetch(PDO::FETCH_ASSOC);
-
-		//Procura usuario
-		$usuario = ControleUsuario::consultarUm($coluna['Criador']);
-		if(!$usuario['status']){
-			throw new Exception('Usuario criador do curso não encontrado!');
-		}
-       	$usuario = $usuario['usuario'];
-        $criador = new Usuario($usuario->id, $usuario->dataNascimento, $usuario->tipo, $usuario->email, null, $usuario->nome, $usuario->sobrenome, $usuario->instituicao, $usuario->imagem, $usuario->biografia);
-		
-		$curso = new Curso($coluna['ID'], $criador, $coluna['Nome'], $coluna['Imagem'], $coluna['Horas'], $coluna['Descricao'], $coluna['Preco'], null);
+				
+		$curso = new Curso($conexao->lastInsertId(), null, $curso->nome, $curso->imagem, $curso->horas, $curso->descricao, $curso->preco, null);
 		return ['status' => true, 'curso' => $curso->converter()];
 	}
 
