@@ -19,7 +19,7 @@ abstract class ControleModulo{
 				$modulo   = new Modulo(null, null, $args->nome);
 				$curso->addModulo($modulo);
 				
-				$resposta = ModuloDAO::inserir($modulo);
+				$resposta = ModuloDAO::inserir($curso);
 			}else{
                 $resposta = ['status' => false];
             }
