@@ -8,7 +8,7 @@ class Modulo{
 
 
 	//construtor
-	function __construct($id, Array $licoes, $nome){
+	function __construct($id = null, Array $licoes = null, $nome = null){
 		$this->id     = $id;
 		$this->licoes = $licoes;
 		$this->nome   = $nome;
