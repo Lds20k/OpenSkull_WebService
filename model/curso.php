@@ -126,7 +126,10 @@ class Curso{
 		else{
 			$curso->modulos	= array();
 			foreach ($this->modulos as $key => $modulo) {
-				array_push($curso->modulos, $modulo->converter());
+				if($modulo instanceof stdClass)
+					array_push($curso->modulos, $modulo);
+				else
+					array_push($curso->modulos, $modulo->converter());
 			}
 		}
 		return $curso;
