@@ -25,7 +25,6 @@ abstract class ControleModulo{
             }
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
-			//echo $ex;
 		}
 		return $resposta;
 	}
@@ -59,9 +58,13 @@ abstract class ControleModulo{
 		return $resposta;
 	}
 
-	public static function atualizar(){
+	public static function atualizar($id, $args){
 		try{
-			
+			$args      = (object)$args;
+			$modulo    = new Modulo($id, null, $args->nome);
+			$dados     = OpenSkullJWT::decodificar($args->jwt);
+			CursoDAO::verificarCriador(ModuloDAO::getCurso($modulo, new Usuario($dados->dados->id)));
+			$resposta = ModuloDAO::atualizar($modulo);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
 		}

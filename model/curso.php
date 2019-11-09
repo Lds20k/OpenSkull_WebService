@@ -29,39 +29,39 @@ class Curso{
 
 	//Setter
 
-	function setID($id){
+	public function setID($id){
 		$this->$id = $id;
 	}
 
-	function setCriador(Usuario $criador){
+	public function setCriador(Usuario $criador){
 		$this->$criador = $criador;
 	}
 
-	function setNome($nome){
+	public function setNome($nome){
 		$this->$nome = $nome;
 	}
 
-	function setImagem($id){
+	public function setImagem($id){
 		$this->$imagem = $imagem;
 	}
 
-	function setHoras($id){
+	public function setHoras($id){
 		$this->$horas = $horas;
 	}
 
-	function setDescricao($descricao){
+	public function setDescricao($descricao){
 		$this->$descricao = $descricao;
 	}
 
-	function setPreco($preco){
+	public function setPreco($preco){
 		$this->$preco = $preco;
 	}
 
-	function setModulo(Array $modulos){
+	public function setModulo(Array $modulos){
 		$this->$modulos = $modulos;
 	}
 
-	function addModulo(Modulo $modulo){
+	public function addModulo(Modulo $modulo){
 		if(!is_array($this->modulos)){
 			$this->modulos = Array();
 		}
@@ -71,35 +71,35 @@ class Curso{
 
 	//Getters
 	
-	function getID(){
+	public function getID(){
 		return $id;
 	}
 
-	function getCriador(){
+	public function getCriador(){
 		return $criador;
 	}
 
-	function getNome(){
+	public function getNome(){
 		return $nome;
 	}
 
-	function getImagem(){
+	public function getImagem(){
 		return $imagem;
 	}
 
-	function getHoras(){
+	public function getHoras(){
 		return $horas;
 	}
 
-	function getDescricao(){
+	public function getDescricao(){
 		return $descricao;
 	}
 
-	function getPreco(){
+	public function getPreco(){
 		return $preco;
 	}
 
-	function getModulos(){
+	public function getModulos(){
 		return $modulos;
 	}
 

@@ -7,6 +7,20 @@ require_once(__DIR__ . '/../../model/licao.php');
 abstract class ModuloDAO{
 	public static $tabela = 'modulo';
 
+	public static function getCurso(Modulo $modulo, Usuario $usuario){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'SELECT '.CursoDAO::$tabela.'.ID, '.CursoDAO::$tabela.'.Criador  FROM '.CursoDAO::$tabela.' INNER JOIN '.ModuloDAO::$tabela.' ON '.ModuloDAO::$tabela.'.ID_Curso = '.CursoDAO::$tabela.'.ID WHERE '.ModuloDAO::$tabela.'.ID = ?';
+		$stmt = $conexao->prepare($SQL);
+		$modulo = $modulo->converter();
+
+		$stmt->bindParam(1, $modulo->id);
+		if(!$stmt->execute()){
+			throw new Exception('Erro ao consultar curso e modulo no banco!');
+		}
+		$resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+		return new Curso($resultado['ID'], $usuario);
+	}
+
 	public static function inserir(Curso $curso){
 		$conexao = ConexaoPDO::getConexao();
 		$SQL = 'INSERT INTO '.ModuloDAO::$tabela.' (ID_Curso, Nome) VALUES (?, ?) ';
@@ -62,28 +76,33 @@ abstract class ModuloDAO{
 
         $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $licao = ControleLicao::consultar($coluna['ID']);
-
-        $modulos = Array();
-        if($licao['status'] == true){
-        	$licao = $licao['licoes'];
-	        foreach ($licao as $chave => $valor) {
-		        $licao = new Licao($valor->id, $valor->nome, $valor->conteudo);
-		        $modulo = new Modulo($coluna['ID'], $licao, $coluna['Nome']);  
-		        array_push($modulos, $modulo->converter());
-		    }
-		}else{
-	        $licao = new Licao(null, null, null);
-	        $modulo = new Modulo($coluna['ID'], $licao, $coluna['Nome']);
-	  	}
-    	return ['status' => true, 'modulo' => $modulos];
+		$licoesR = ControleLicao::consultar($coluna['ID'])['licoes'];
+		$licoes = Array();
+		foreach ($licoesR as $chave => $licao) {
+			$licao = new Licao($licao->id, $licao->nome, $licao->conteudo);
+			array_push($licoes, $licao);
+		}
+		$modulo = new Modulo($coluna['ID'], $licoes, $coluna['Nome']);  
+    	return ['status' => true, 'modulo' => $modulo];
 	}
 
 	public static function deletar(){
 
 	}
 
-	public static function atualizar(){
+	public static function atualizar(Modulo $modulo){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'UPDATE '.ModuloDAO::$tabela.' SET Nome = ? WHERE ID = ?';
+		$stmt = $conexao->prepare($SQL);
+		$modulo = $modulo->converter();
 
+		$stmt->bindParam(1, $modulo->nome);
+		$stmt->bindParam(2, $modulo->id);
+
+		if(!$stmt->execute())
+			throw new Exception('Erro ao atualizar modulo no banco!');
+
+		return ['status' => true];			
 	}
+	
 }

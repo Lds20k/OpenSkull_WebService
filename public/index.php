@@ -60,7 +60,7 @@ $app->group('/api', function(RouteCollectorProxy $group){
             return $response->withHeader('Content-Type', 'application/json');
         });
 
-        //Atualiza um
+        //Atualizar
         $group->put('/{jwt}', function(Request $request, Response $response, $args) {
             $usuario = json_encode( ControleUsuario::atualizar( $args['jwt'], $request->getQueryParams() ) );
             $response->getBody()->write($usuario);
@@ -135,6 +135,12 @@ $app->group('/api', function(RouteCollectorProxy $group){
         $group->get('/one/{id}', function(Request $request, Response $response, $args) {
             $modulo = json_encode(ControleModulo::consultarUm( $args['id'] ));
             $response->getBody()->write($modulo);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        $group->put('/{id}', function(Request $request, Response $response, $args) {
+            $usuario = json_encode( ControleModulo::atualizar( $args['id'], $request->getQueryParams() ) );
+            $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');
         });
     });

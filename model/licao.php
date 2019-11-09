@@ -7,7 +7,7 @@ class Licao{
 	private $conteudo;
 
 	//construtor
-	function __construct($id, $nome, $conteudo){
+	function __construct($id = null, $nome = null, $conteudo = null){
 		$this->id = $id;
 		$this->nome = $nome;
 		$this->conteudo = $conteudo;
