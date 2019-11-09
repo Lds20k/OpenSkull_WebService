@@ -126,7 +126,7 @@ class Curso{
 		else{
 			$curso->modulos	= array();
 			foreach ($this->modulos as $key => $modulo) {
-				array_push($curso->modulos, $modulo);
+				array_push($curso->modulos, $modulo->converter());
 			}
 		}
 		return $curso;

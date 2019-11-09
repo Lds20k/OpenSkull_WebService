@@ -14,12 +14,12 @@ abstract class ModuloDAO{
 		$curso = $curso->converter();
 
 		$stmt->bindParam(1, $curso->id);
-		$stmt->bindParam(2, $curso->modulo[0]->nome);
+		$stmt->bindParam(2, $curso->modulos[0]->nome);
 
 		if(!$stmt->execute()){
 			throw new Exception('Erro ao inserir modulo no banco!');
 		}
-		$modulo = new Modulo($conexao->lastInsertId(), null, $args->nome);
+		$modulo = new Modulo($conexao->lastInsertId(), null, $curso->modulos[0]->nome);
 
 		return ['status' => true, 'modulo' => $modulo->converter()];
 	}
