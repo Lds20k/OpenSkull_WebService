@@ -27,8 +27,6 @@ abstract class ModuloDAO{
 		$stmt = $conexao->prepare($SQL);
 		$curso = $curso->converter();
 
-
-
 		$stmt->bindParam(1, $curso->id);
 		$stmt->bindParam(2, $curso->modulos[0]->nome);
 
@@ -55,14 +53,14 @@ abstract class ModuloDAO{
         	$modulos = Array();
 			$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
 			foreach ($coluna as $chave => $valor){
-			$licoes = ControleLicao::consultar($valor['ID']);
-			if(!$licoes['status'])
-				throw new Exception('Erro ao consultar lições do modulo!');
-			$licoes = $licoes['licoes'];
-			
-			$modulo = new Modulo($valor['ID'], $licoes, $valor['Nome']);
-			array_push($modulos, $modulo->converter());
-		}
+				$licoes = ControleLicao::consultar($valor['ID']);
+				if(!$licoes['status'])
+					throw new Exception('Erro ao consultar lições do modulo!');
+				$licoes = $licoes['licoes'];
+				
+				$modulo = new Modulo($valor['ID'], $licoes, $valor['Nome']);
+				array_push($modulos, $modulo->converter());
+			}
         }
         return ['status' => true, 'modulos' => $modulos];
 	}

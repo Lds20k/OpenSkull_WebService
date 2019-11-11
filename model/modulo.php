@@ -66,8 +66,8 @@ class Modulo{
 					foreach ($this->licoes as $chave => $licao)
 						array_push($modulo->licoes, $licao->converter());
 				}
-			$modulo->nome   = $this->nome;
 		}
+		$modulo->nome = $this->nome;
 		return $modulo;
 	}
 }

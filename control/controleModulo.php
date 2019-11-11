@@ -25,7 +25,6 @@ abstract class ControleModulo{
             }
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
-			//echo $ex;
 		}
 		return $resposta;
 	}
