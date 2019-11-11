@@ -18,13 +18,14 @@ abstract class ControleModulo{
 				CursoDAO::verificarCriador($curso);
 				$modulo   = new Modulo(null, null, $args->nome);
 				$curso->addModulo($modulo);
-				
+
 				$resposta = ModuloDAO::inserir($curso);
 			}else{
                 $resposta = ['status' => false];
             }
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
+			//echo $ex;
 		}
 		return $resposta;
 	}
@@ -33,7 +34,6 @@ abstract class ControleModulo{
 		try{
 			$resposta = ModuloDAO::consultar($idCurso);
 		}catch(Exception $ex){
-			echo $ex;
 			$resposta = ['status' => false];
 		}
 		return $resposta;
