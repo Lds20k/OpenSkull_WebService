@@ -20,6 +20,10 @@ abstract class ControleUsuario{
                 $args['biografia'] = null;
             }
 
+            if(!filter_var($args['email'], FILTER_VALIDATE_EMAIL)) {
+                throw new Exception("Email invalido");
+            }
+
             if(sizeof($args) == 8){
                 $args = (object)$args;
                 $usuario = new Usuario(

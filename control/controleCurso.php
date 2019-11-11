@@ -9,24 +9,29 @@ require_once(__DIR__ . '/dao/cursoDAO.php');
 require_once(__DIR__ . '/../model/jwt.php');
 
 abstract class ControleCurso{
-	public static function inserir($args){
+	public static function inserir($args, $files){
 		try {
-			if(!isset($imagem)){
-                $imagem = null;
-            }
+			$args = (Object)$args;
+			$dados = OpenSkullJWT::decodificar($args->jwt);
+			$imagem = $files['imagem'];
 
-            if(sizeof($args) == 6){
-            	$args = (Object)$args;
-            	$dados = OpenSkullJWT::decodificar($args->jwt);
-				$usuario = ControleUsuario::consultarUm($dados->dados->id);
-				$usuario = new Usuario($usuario['usuario']->id, null, null, null, null, null, null, null, null, null);
-				$curso = new Curso(null, $usuario, $args->nome, $args->imagem, $args->horas, $args->descricao, $args->preco, null);
-				$resposta = CursoDAO::inserir($curso);
-            }else{
-            	$resposta = ['status' => false];
-            }
+			if($imagem->getError() === UPLOAD_ERR_OK){
+				$diretorio = 'midia/imagens';
+				$imagem = new ControleArquivo($diretorio, $imagem);
+			}
+			$usuario = ControleUsuario::consultarUm($dados->dados->id);
+			$usuario = new Usuario($usuario['usuario']->id, null, null, null, null, null, null, null, null, null);
+			$curso = new Curso(null, $usuario, $args->nome, $imagem->getNomeArquivo(), $args->horas, $args->descricao, $args->preco, null);
+
+			$tamanho = getimagesize($imagem->getArquivoTemp());
+			if($tamanho[0] !== 255 and $tamanho[1] !== 255)
+				throw new Exception("Arquivos devem ter um tamanho fixo de 255x255");
+			
+			$resposta = CursoDAO::inserir($curso);
+			$imagem->moverArquivo();
 		} catch (Exception $ex) {
 			$resposta = ['status' => false];
+			$imagem->limparTemp();
 			echo $ex;
 		}
 		return $resposta;

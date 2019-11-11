@@ -13,13 +13,14 @@ require_once(__DIR__ . '/../control/controleLicao.php');
 
 $app = AppFactory::create();
 
-$app->add(function ($request, $handler) {
-    $response = $handler->handle($request);
-    return $response
-            ->withHeader('Access-Control-Allow-Origin', '*')
-            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
-            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-});
+//Tirar as tag somente no Cotil
+//$app->add(function ($request, $handler) {
+//    $response = $handler->handle($request);
+//    return $response
+//            ->withHeader('Access-Control-Allow-Origin', '*')
+//            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+//            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+//});
 
 $app->group('/api', function(RouteCollectorProxy $group){
     
@@ -81,7 +82,7 @@ $app->group('/api', function(RouteCollectorProxy $group){
 
         //Insere
         $group->post('', function(Request $request, Response $response, $args) { 
-            $curso = json_encode(ControleCurso::inserir( $request->getQueryParams() ));
+            $curso = json_encode(ControleCurso::inserir( $request->getQueryParams(), $request->getUploadedFiles() ));
             $response->getBody()->write($curso);
             return $response->withHeader('Content-Type', 'application/json');
         });
@@ -149,7 +150,7 @@ $app->group('/api', function(RouteCollectorProxy $group){
 
         //Insere
         $group->post('', function(Request $request, Response $response, $args) {
-            $licao = json_encode( ControleLicao::inserir( $request->getQueryParams() ) );
+            $licao = json_encode( ControleLicao::inserir( $request->getQueryParams(), $request->getUploadedFiles()) );
             $response->getBody()->write($licao);
             return $response->withHeader('Content-Type', 'application/json');
         });

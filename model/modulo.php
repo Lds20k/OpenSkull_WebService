@@ -11,6 +11,7 @@ class Modulo{
 		$this->id     = $id;
 		$this->licoes = $licoes;
 		$this->nome   = $nome;
+		
 	}
 
 	//Getters
@@ -41,14 +42,32 @@ class Modulo{
 		$this->nome = $nome;
 	}
 
+	public function addLicao(Licao $licao){
+		if(is_null($this->licoes))
+			$this->licoes = Array();
+		array_push($this->licoes, $licao);		
+	}
+
 	//Outros metodos
 
 	public function converter(){
 		$modulo         = new stdClass;
 		$modulo->id     = $this->id;
-		$modulo->licoes = $this->licoes;
-		$modulo->nome   = $this->nome;
-
+		if(is_null($this->licoes))
+			$modulo->licoes	= null;
+		else{
+			if(empty($this->licoes))
+				$modulo->licoes = Array();
+			else
+				if($this->licoes[0] instanceof stdClass)
+					$modulo->licoes = $this->licoes;
+				else{
+					$modulo->licoes = array();
+					foreach ($this->licoes as $chave => $licao)
+						array_push($modulo->licoes, $licao->converter());
+				}
+			$modulo->nome   = $this->nome;
+		}
 		return $modulo;
 	}
 }

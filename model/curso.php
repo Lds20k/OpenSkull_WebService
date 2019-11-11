@@ -30,35 +30,35 @@ class Curso{
 	//Setter
 
 	public function setID($id){
-		$this->$id = $id;
+		$this->id = $id;
 	}
 
 	public function setCriador(Usuario $criador){
-		$this->$criador = $criador;
+		$this->criador = $criador;
 	}
 
 	public function setNome($nome){
-		$this->$nome = $nome;
+		$this->nome = $nome;
 	}
 
 	public function setImagem($id){
-		$this->$imagem = $imagem;
+		$this->imagem = $imagem;
 	}
 
 	public function setHoras($id){
-		$this->$horas = $horas;
+		$this->horas = $horas;
 	}
 
 	public function setDescricao($descricao){
-		$this->$descricao = $descricao;
+		$this->descricao = $descricao;
 	}
 
 	public function setPreco($preco){
-		$this->$preco = $preco;
+		$this->preco = $preco;
 	}
 
 	public function setModulo(Array $modulos){
-		$this->$modulos = $modulos;
+		$this->modulos = $modulos;
 	}
 
 	public function addModulo(Modulo $modulo){
@@ -72,35 +72,35 @@ class Curso{
 	//Getters
 	
 	public function getID(){
-		return $id;
+		return $this->id;
 	}
 
 	public function getCriador(){
-		return $criador;
+		return $this->criador;
 	}
 
 	public function getNome(){
-		return $nome;
+		return $this->nome;
 	}
 
 	public function getImagem(){
-		return $imagem;
+		return $this->imagem;
 	}
 
 	public function getHoras(){
-		return $horas;
+		return $this->horas;
 	}
 
 	public function getDescricao(){
-		return $descricao;
+		return $this->descricao;
 	}
 
 	public function getPreco(){
-		return $preco;
+		return $this->preco;
 	}
 
 	public function getModulos(){
-		return $modulos;
+		return $this->modulos;
 	}
 
 	//Outros metodos
@@ -124,13 +124,16 @@ class Curso{
 		if(is_null($this->modulos))
 			$curso->modulos	= null;
 		else{
-			$curso->modulos	= array();
-			foreach ($this->modulos as $key => $modulo) {
-				if($modulo instanceof stdClass)
-					array_push($curso->modulos, $modulo);
-				else
-					array_push($curso->modulos, $modulo->converter());
-			}
+			if(empty($this->modulos))
+				$curso->modulos	= Array();
+			else
+				if($this->modulos[0] instanceof stdClass)
+					$curso->modulos = $this->modulos;
+				else{
+					$curso->modulos	= array();
+					foreach ($this->modulos as $key => $modulo)
+						array_push($curso->modulos, $modulo->converter());
+				}
 		}
 		return $curso;
 	}

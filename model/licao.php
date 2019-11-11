@@ -5,12 +5,14 @@ class Licao{
 	private $id;
 	private $nome;
 	private $conteudo;
+	private $video;
 
 	//construtor
-	function __construct($id = null, $nome = null, $conteudo = null){
+	function __construct($id = null, $nome = null, $conteudo = null, $video = null){
 		$this->id = $id;
 		$this->nome = $nome;
 		$this->conteudo = $conteudo;
+		$this->video  = $video;
 	}
 
 	//Getters
@@ -48,6 +50,7 @@ class Licao{
 		$licao->id          = $this->id;
 		$licao->nome        = $this->nome;
 		$licao->conteudo    = $this->conteudo;
+		$licao->video    	= $this->video;
 		return $licao;
 	}
 }

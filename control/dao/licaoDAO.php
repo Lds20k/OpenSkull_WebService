@@ -5,19 +5,22 @@ require_once(__DIR__ . '/../../connect/conexao.php');
 abstract class LicaoDAO{
 	public static $tabela = 'licao';
 
-	public static function inserir($args){
+	public static function inserir(Modulo $modulo){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'INSERT INTO '.LicaoDAO::$tabela.' (ID_Modulo, Nome, Conteudo) VALUES (?, ?, ?)';
-		$stmt = $conexao->prepare($SQL);
+		$SQL	 = 'INSERT INTO '.LicaoDAO::$tabela.' (ID_Modulo, Nome, Conteudo, Video) VALUES (?, ?, ?, ?)';
+		$stmt	 = $conexao->prepare($SQL);
+		$modulo  = $modulo->converter();
+		$licao   = $modulo->licoes[0];
 
-		$stmt->bindParam(1, $args->idModulo);
-		$stmt->bindParam(2, $args->nome);
-		$stmt->bindParam(3, $args->conteudo);
-
+		$stmt->bindParam(1, $modulo->id);
+		$stmt->bindParam(2, $licao->nome);
+		$stmt->bindParam(3, $licao->conteudo);
+		$stmt->bindParam(4, $licao->video);
         if(!$stmt->execute()){
             throw new Exception('Erro ao inserir usuario no banco!');
-        }
-        return ['status' => true];
+		}
+		$licao->id = $conexao->lastInsertId();
+        return ['status' => true, 'licao' => $licao];
 	}
 	
 	public static function atualizar(){

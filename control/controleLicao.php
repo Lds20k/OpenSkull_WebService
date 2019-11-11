@@ -1,16 +1,32 @@
 <?php 
 require_once(__DIR__ . '/dao/licaoDAO.php');
+require_once(__DIR__ . '/controleArquivo.php');
 
 abstract class ControleLicao{
 
-	public static function inserir($args){
+	public static function inserir($args, $file){
 		try{
-			if(sizeof($args) == 3){
-				$args     = (Object)$args;
-				$resposta = LicaoDAO::inserir($args);
+			$args    = (Object)$args;
+			$jwt   	 = OpenSkullJWT::decodificar($args->jwt);
+			
+			$usuario = new Usuario($jwt->dados->id);
+			$modulo  = new Modulo($args->idModulo);
+			$curso   = ModuloDAO::getCurso($modulo, $usuario);
+			CursoDAO::verificarCriador($curso);
+
+			if(!empty($file)){
+				$video = $file['video'];
+				if($video->getError() === UPLOAD_ERR_OK){
+					$diretorio = 'midia/videos';
+					$video = ControleArquivo::moveUploadedFile($diretorio, $video);
+				}
 			}else{
-				$resposta = ['status' => false];
+				$video = null;
 			}
+			$licao = new Licao(null, $args->nome, isset($args->conteudo) ? $args->conteudo : null, $video);
+			$modulo->addLicao($licao);
+			
+			$resposta = LicaoDAO::inserir($modulo);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
 			echo $ex;
