@@ -200,6 +200,25 @@ abstract class UsuarioDAO{
         return ['status' => true];
     }
 
+    public static function adicionarCurso(Usuario $usuario, Curso $curso){
+        $conexao = ConexaoPDO::getConexao();
+        $SQL     = 'INSERT INTO possui (ID_Usuario, ID_Curso, Ativado) VALUES (?, ?, ?)';
+        $stmt    = $conexao->prepare($SQL);
+        $usuario = $usuario->converter();
+        $curso   = $curso->converter();
+
+
+        $stmt->bindParam(1, $usuario->id);
+        $stmt->bindParam(2, $curso->id);
+        $ativado = ($curso->preco > 0) ? 0 : 1;
+        $stmt->bindParam(3, $ativado);
+
+        if(!$stmt->execute())
+            throw new Exception('Erro ao fazer relacionamento em possui!');
+
+        return ['status' => true];
+    }
+
     public static function consultarCursos($key){
         $conexao = ConexaoPDO::getConexao();
         $SQL = 'SELECT '.CursoDAO::$tabela.'.*, '.UsuarioDAO::$tabelaPossui.'.Ativado FROM '.UsuarioDAO::$tabelaPossui.' INNER JOIN '.CursoDAO::$tabela.' ON possui.ID_Curso = curso.ID WHERE possui.ID_Usuario = ?';

@@ -47,21 +47,17 @@ abstract class ModuloDAO{
 		if(!$stmt->execute())
             throw new Exception('Erro ao consultar modulo no banco!');
 
-        if($stmt->rowCount() == 0){
-        	throw new Exception('Nao exite modulo!');
-        }else{
-        	$modulos = Array();
-			$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
-			foreach ($coluna as $chave => $valor){
-				$licoes = ControleLicao::consultar($valor['ID']);
-				if(!$licoes['status'])
-					throw new Exception('Erro ao consultar lições do modulo!');
-				$licoes = $licoes['licoes'];
-				
-				$modulo = new Modulo($valor['ID'], $licoes, $valor['Nome']);
-				array_push($modulos, $modulo->converter());
-			}
-        }
+		$modulos = Array();
+		$coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+		foreach ($coluna as $chave => $valor){
+			$licoes = ControleLicao::consultar($valor['ID']);
+			if(!$licoes['status'])
+				throw new Exception('Erro ao consultar lições do modulo!');
+			$licoes = $licoes['licoes'];
+			
+			$modulo = new Modulo($valor['ID'], $licoes, $valor['Nome']);
+			array_push($modulos, $modulo->converter());
+		}
         return ['status' => true, 'modulos' => $modulos];
 	}
 

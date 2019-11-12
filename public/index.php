@@ -68,6 +68,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             return $response->withHeader('Content-Type', 'application/json');
         });
 
+        //Adiciona um curso para o usuario
+        $group->post('/curso/adicionar', function(Request $request, Response $response, $args) { 
+            $resposta = json_encode(ControleUsuario::adicionarCurso( $request->getQueryParams() ));
+            $response->getBody()->write($resposta);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
         $group->group('/curso', function(RouteCollectorProxy $group){
             $group->get('/{key}', function(Request $request, Response $response, $args) {
                 $cursos = json_encode( ControleUsuario::consultarCursos( $args['key'] ) );

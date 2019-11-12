@@ -51,6 +51,7 @@ abstract class ControleCurso{
 			$resposta = CursoDAO::consultarUm($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
+			echo $ex;
 		}
 		return $resposta;
 	}

@@ -110,6 +110,22 @@ abstract class ControleUsuario{
         return $resposta;
     }
 
+    public static function adicionarCurso($args){
+		try{
+			$args  = (Object)$args;
+            $dados = OpenSkullJWT::decodificar($args->jwt)->dados;
+
+			$usuario  = new Usuario($dados->id);
+            $curso 	  = ControleCurso::consultarUm($args->cursoId)['curso'];
+            $curso    = new Curso($curso->id, null, null, null, null, null, $curso->preco);
+            $resposta = UsuarioDAO::adicionarCurso($usuario, $curso);
+		}catch(Exception $ex){
+            $resposta = ['status' => false];
+            //echo $ex;
+		}
+		return $resposta;
+	}
+
     public static function consultarCursos($key){
         try{
             if(OpenSkullJWT::verificar($key)){
