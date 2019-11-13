@@ -109,8 +109,8 @@ $app->group('/api', function(RouteCollectorProxy $group){
         });
 
         //Deleta um
-        $group->delete('/{id}', function (Request $request, Response $response, $args) {
-            $resposta = json_encode( ControleCurso::deletar( $args['id'], $request->getQueryParams()) );
+        $group->delete('/{id}/{jwt}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleCurso::deletar( $args['id'], $args['jwt']) );
             $response->getBody()->write($resposta);
             return $response;
         });
@@ -153,8 +153,8 @@ $app->group('/api', function(RouteCollectorProxy $group){
         });
 
         //Deleta um
-        $group->delete('/{id}', function (Request $request, Response $response, $args) {
-            $resposta = json_encode( ControleModulo::deletar( $args['id'], $request->getQueryParams() ) );
+        $group->delete('/{id}/{jwt}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleModulo::deletar( $args['id'], $args['jwt'] ) );
             $response->getBody()->write($resposta);
             return $response;
         });
@@ -184,8 +184,8 @@ $app->group('/api', function(RouteCollectorProxy $group){
         });
 
         //Deleta um
-        $group->delete('/{id}', function (Request $request, Response $response, $args) {
-            $resposta = json_encode( ControleLicao::deletar( $args['id'], $request->getQueryParams()) );
+        $group->delete('/{id}/{jwt}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleLicao::deletar( $args['id'], $args['jwt'] ) );
             $response->getBody()->write($resposta);
             return $response;
         });

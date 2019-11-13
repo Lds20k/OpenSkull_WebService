@@ -61,10 +61,9 @@ abstract class ControleLicao{
 		return $resposta;
 	}
 	
-	public static function deletar($id, $args){
+	public static function deletar($id, $jwt){
 		try{
-			$args     = (object)$args;
-			$dados    = OpenSkullJWT::decodificar($args->jwt);
+			$dados    = OpenSkullJWT::decodificar($jwt);
 
 			$usuario  = new Usuario($dados->dados->id);
 			$licao 	  = new Licao($id);
