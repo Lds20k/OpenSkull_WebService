@@ -56,11 +56,20 @@ abstract class ControleCurso{
 		return $resposta;
 	}
 
-	public static function deletar($id){
+	public static function deletar($id, $args){
 		try{
+			$args     = (object)$args;
+			$dados    = OpenSkullJWT::decodificar($args->jwt);
+
+			$usuario  = new Usuario($dados->dados->id);
+			$curso	  = new Curso($id, $usuario);
+
+			CursoDAO::verificarCriador($curso);
+
 			$resposta = CursoDAO::deletar($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
+			echo $ex;
 		}
 		return $resposta;
 	}

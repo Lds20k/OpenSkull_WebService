@@ -110,7 +110,7 @@ $app->group('/api', function(RouteCollectorProxy $group){
 
         //Deleta um
         $group->delete('/{id}', function (Request $request, Response $response, $args) {
-            $resposta = json_encode( ControleCurso::deletar( $args['id']) );
+            $resposta = json_encode( ControleCurso::deletar( $args['id'], $request->getQueryParams()) );
             $response->getBody()->write($resposta);
             return $response;
         });
@@ -154,7 +154,7 @@ $app->group('/api', function(RouteCollectorProxy $group){
 
         //Deleta um
         $group->delete('/{id}', function (Request $request, Response $response, $args) {
-            $resposta = json_encode( ControleModulo::deletar( $args['id']) );
+            $resposta = json_encode( ControleModulo::deletar( $args['id'], $request->getQueryParams() ) );
             $response->getBody()->write($resposta);
             return $response;
         });
@@ -181,6 +181,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $licao = json_encode(ControleLicao::consultarUm( $args['id'] ));
             $response->getBody()->write($licao);
             return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        //Deleta um
+        $group->delete('/{id}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleLicao::deletar( $args['id'], $request->getQueryParams()) );
+            $response->getBody()->write($resposta);
+            return $response;
         });
     });
 });

@@ -34,7 +34,6 @@ abstract class ControleModulo{
 			$resposta = ModuloDAO::consultar($idCurso);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
-			echo $ex;
 		}
 		return $resposta;
 	}
@@ -49,11 +48,20 @@ abstract class ControleModulo{
 		return $resposta;
 	}
 
-	public static function deletar(){
+	public static function deletar($id ,$args){
 		try{
-			$resposta = ModuloDAO::deletar(new Modulo($id));
+			$args     = (object)$args;
+			$dados    = OpenSkullJWT::decodificar($args->jwt);
+
+			$usuario  = new Usuario($dados->dados->id);
+			$modulo	  = new Modulo($id);
+			$curso	  = ModuloDAO::getCurso($modulo, $usuario);
+
+			CursoDAO::verificarCriador($curso);
+
+			$resposta = ModuloDAO::deletar($modulo);
 		}catch(Exception $ex){
-			$resposta = ['status' => false];			
+			$resposta = ['status' => false];
 		}
 		return $resposta;
 	}

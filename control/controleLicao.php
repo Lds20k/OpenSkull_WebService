@@ -61,11 +61,22 @@ abstract class ControleLicao{
 		return $resposta;
 	}
 	
-	public static function deletar($id){
+	public static function deletar($id, $args){
 		try{
+			$args     = (object)$args;
+			$dados    = OpenSkullJWT::decodificar($args->jwt);
 
+			$usuario  = new Usuario($dados->dados->id);
+			$licao 	  = new Licao($id);
+			$modulo	  = LicaoDAO::getModulo($licao);
+			$curso	  = ModuloDAO::getCurso($modulo, $usuario);
+
+			CursoDAO::verificarCriador($curso);
+
+			$resposta = LicaoDAO::deletar($id);
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
+			echo $ex;
 		}
 		return $resposta;
 	}

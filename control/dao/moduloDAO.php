@@ -87,9 +87,15 @@ abstract class ModuloDAO{
 
 	public static function deletar(Modulo $modulo){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'DELETE '.LicaoDAO::$tabela.' FROM '.LicaoDAO::$tabela.' INNER JOIN '.ModuloDAO::$tabela.' ON '.LicaoDAO::$tabela.'.ID_Modulo = '.ModuloDAO::$tabela.'.ID WHERE '.ModuloDAO::$tabela.'ID = ?';
-		$modulo = $modulo->converter;
+		$SQL = 'DELETE '.LicaoDAO::$tabela.' FROM '.LicaoDAO::$tabela.' INNER JOIN '.ModuloDAO::$tabela.' ON '.LicaoDAO::$tabela.'.ID_Modulo = '.ModuloDAO::$tabela.'.ID WHERE '.ModuloDAO::$tabela.'.ID = ?';
+		$modulo = $modulo->converter();
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $modulo->id);
 
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar lições no banco!');
+		
+		$SQL = 'DELETE FROM '.ModuloDAO::$tabela.' WHERE ID = ?';
 		$stmt = $conexao->prepare($SQL);
 		$stmt->bindParam(1, $modulo->id);
 

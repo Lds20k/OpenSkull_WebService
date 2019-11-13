@@ -109,11 +109,27 @@ abstract class CursoDAO{
 
 	public static function deletar($id){
 		$conexao = ConexaoPDO::getConexao();
-		$SQL = 'DELETE FROM '.CursoDAO::$tabela.' WHERE ID = ?';
-
+		$SQL = 'DELETE possui FROM possui INNER JOIN '.CursoDAO::$tabela.' ON possui.ID_Curso = '.CursoDAO::$tabela.'.ID WHERE '.CursoDAO::$tabela.'.ID = ?';
 		$stmt = $conexao->prepare($SQL);
 		$stmt->bindParam(1, $id);
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar lições no banco!');
 
+		$SQL = 'DELETE '.LicaoDAO::$tabela.' FROM '.LicaoDAO::$tabela.' INNER JOIN '.ModuloDAO::$tabela.' ON '.LicaoDAO::$tabela.'.ID_Modulo = '.ModuloDAO::$tabela.'.ID WHERE '.ModuloDAO::$tabela.'.ID_Curso = ?';
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $id);
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar lições no banco!');
+		
+		$SQL = 'DELETE '.ModuloDAO::$tabela.' FROM '.ModuloDAO::$tabela.' INNER JOIN '.CursoDAO::$tabela.' ON '.ModuloDAO::$tabela.'.ID_Curso = '.CursoDAO::$tabela.'.ID WHERE '.CursoDAO::$tabela.'.ID = ?';
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $id);
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar modulos no banco!');
+
+		$SQL = 'DELETE FROM '.CursoDAO::$tabela.' WHERE ID = ?';
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $id);
 		if(!$stmt->execute())
 			throw new Exception('Erro ao deletar curso no banco!');
 
