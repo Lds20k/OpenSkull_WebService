@@ -33,14 +33,39 @@ abstract class ControleLicao{
 		return $resposta;
 	}
 	
-	public static function atualizar(){
-		try{
+	public static function atualizar($id, $args){
+        try{
+            $args = (object)$args;
 
-		}catch(Exception $ex){
-			$resposta = ['status' => false];
-		}
-		return $resposta;
-	}
+            if(isset($args->nome)){
+                $nome = $args->nome;
+            }else{
+                $nome = null;
+            }
+
+            if(isset($args->conteudo)){
+                $conteudo = $args->conteudo;
+            }else{
+                $conteudo = null;
+            }
+
+            if(!isset($file['video'])){
+                $video = new ControleArquivo(null, null);
+            }else if($file['video']->getError() === UPLOAD_ERR_OK){
+                $video      = $file['video'];
+                $diretorio = 'midia/videos';
+                $video = new ControleArquivo($diretorio, $video);
+            }
+            $licoes = new Licao($id, $nome, $conteudo, $video->getNomeArquivo());
+            $resposta = LicaoDAO::atualizar($licoes);
+            $video->moverArquivo();
+        }catch(Exception $ex){
+            $resposta = ['status' => false];
+            echo $ex;
+            $video->limparTemp();
+        }
+        return $resposta;
+    }
 	
 	public static function consultar($idModulo){
 		try{

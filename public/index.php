@@ -75,6 +75,19 @@ $app->group('/api', function(RouteCollectorProxy $group){
             return $response->withHeader('Content-Type', 'application/json');
         });
 
+        //Pega os cursos para ativar
+        $group->get('/curso/desativados', function(Request $request, Response $response, $args) { 
+            $resposta = json_encode(ControleUsuario::desativados());
+            $response->getBody()->write($resposta);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
+        $group->post('/curso/ativar', function(Request $request, Response $response, $args) { 
+            $resposta = json_encode(ControleUsuario::ativar( $request->getQueryParams() ));
+            $response->getBody()->write($resposta);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
+
         $group->group('/curso', function(RouteCollectorProxy $group){
             $group->get('/{key}', function(Request $request, Response $response, $args) {
                 $cursos = json_encode( ControleUsuario::consultarCursos( $args['key'] ) );
@@ -195,6 +208,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $resposta = json_encode( ControleLicao::deletar( $args['id'], $args['jwt'] ) );
             $response->getBody()->write($resposta);
             return $response;
+        });
+        
+        //Atualizar
+        $group->put('/{id}', function(Request $request, Response $response, $args) {
+            $licao = json_encode( ControleLicao::atualizar( $args['id'], $request->getQueryParams()) );
+            $response->getBody()->write($licao);
+            return $response->withHeader('Content-Type', 'application/json');
         });
     });
 });

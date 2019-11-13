@@ -219,6 +219,43 @@ abstract class UsuarioDAO{
         return ['status' => true];
     }
 
+    public static function desativados(){
+        $conexao = ConexaoPDO::getConexao();
+        $SQL = 'SELECT * FROM possui WHERE Ativado = 0';
+        $stmt = $conexao->prepare($SQL);
+
+        if(!$stmt->execute())
+            throw new Exception('Erro ao pesquisar no banco!');
+
+        $possui = new stdClass();
+        $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $possui = Array();
+        foreach ($coluna as $chave => $valor) {
+            $conteudo = new stdClass();
+            $conteudo->id_curso = $valor['ID_Curso'];
+            $conteudo->id_usuario = $valor['ID_Usuario'];
+            $conteudo->ativado = $valor['Ativado'];
+            array_push($possui, $conteudo);
+        }
+		return ['status' => true, 'possui' => $possui];
+    }
+    
+    public static function ativar($usuario, $curso){
+        $conexao = ConexaoPDO::getConexao();
+        $SQL = 'UPDATE possui SET Ativado = 1 WHERE ID_Usuario = ? AND ID_Curso = ?';
+        $stmt = $conexao->prepare($SQL);
+        
+        $stmt->bindParam(1, $usuario);
+        $stmt->bindParam(2, $curso);
+
+        if(!$stmt->execute())
+            throw new Exception('Erro ao atualizar no banco!');
+
+        
+
+        return ['status' => true];
+	}
+
     public static function consultarCursos($key){
         $conexao = ConexaoPDO::getConexao();
         $SQL = 'SELECT '.CursoDAO::$tabela.'.*, '.UsuarioDAO::$tabelaPossui.'.Ativado FROM '.UsuarioDAO::$tabelaPossui.' INNER JOIN '.CursoDAO::$tabela.' ON possui.ID_Curso = curso.ID WHERE possui.ID_Usuario = ?';

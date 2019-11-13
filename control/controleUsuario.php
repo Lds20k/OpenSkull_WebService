@@ -124,6 +124,27 @@ abstract class ControleUsuario{
             //echo $ex;
 		}
 		return $resposta;
+    }
+    
+    public static function desativados(){
+		try{
+            $resposta = UsuarioDAO::desativados();
+		}catch(Exception $ex){
+            $resposta = ['status' => false];
+		}
+		return $resposta;
+	}
+
+    public static function ativar($args){
+		try{
+            $args  = (Object)$args;
+            $usuario = $args->idUsuario;
+            $curso = $args->idCurso;
+            $resposta = UsuarioDAO::ativar($usuario, $curso);
+		}catch(Exception $ex){
+            $resposta = ['status' => false];
+		}
+		return $resposta;
 	}
 
     public static function consultarCursos($key){
