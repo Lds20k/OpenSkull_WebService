@@ -136,8 +136,64 @@ abstract class CursoDAO{
 		return ['status' => true];
 	}
 
-	public static function atualizar(){
+	public static function atualizar(Curso $curso){
+		$conexao = ConexaoPDO::getConexao();
+        function executar($stmt){
+            if(!$stmt->execute()){
+                echo a;
+                return false;
+            }
+            return true;
+        }
 
+        $curso = $curso->converter();
+        $condicao = 'WHERE ID = ?';
+        if(!is_null($curso->nome)){
+            $SQL = 'UPDATE '.CursoDAO::$tabela.' SET Nome = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $curso->nome);
+            $stmt->bindParam(2, $curso->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o titulo do curso!');
+		}
+		
+		if(!is_null($curso->imagem)){
+            $SQL = 'UPDATE '.CursoDAO::$tabela.' SET Imagem = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $curso->imagem);
+            $stmt->bindParam(2, $curso->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar a imagem do curso!');
+		}
+		
+		if(!is_null($curso->horas)){
+            $SQL = 'UPDATE '.CursoDAO::$tabela.' SET Horas = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $curso->horas);
+            $stmt->bindParam(2, $curso->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar as horas do curso!');
+		}
+		
+		if(!is_null($curso->descricao)){
+            $SQL = 'UPDATE '.CursoDAO::$tabela.' SET Descricao = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $curso->descricao);
+            $stmt->bindParam(2, $curso->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar a descricao do curso!');
+		}
+		
+		if(!is_null($curso->preco)){
+            $SQL = 'UPDATE '.CursoDAO::$tabela.' SET Preco = ? ' . $condicao;
+            $stmt = $conexao->prepare($SQL);
+            $stmt->bindParam(1, $curso->preco);
+            $stmt->bindParam(2, $curso->id);
+            if(!executar($stmt))
+                throw new Exception('Erro ao atualizar o preco do curso!');
+		}
+		
+		return ['status' => true];
 	}
 
 	public static function consultarPorUsuario($idUsuario){

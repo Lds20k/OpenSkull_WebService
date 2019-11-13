@@ -73,7 +73,42 @@ abstract class ControleCurso{
 		return $resposta;
 	}
 
-	public static function atualizar($id, $jwt, $criador = null, $nome = null, $imagem = null, $horas = null, $descricao = null, $preco = null){
+	public static function atualizar($jwt, $args, $files){
+		try{
+			$args  = (Object)$args;
+			$dados = OpenSkullJWT::decodificar($jwt);
+			if(isset($files['imagem'])){
+				$imagem = $files['imagem'];
+				if($imagem->getError() === UPLOAD_ERR_OK){
+					$diretorio = 'midia/imagens';
+					$imagem = new ControleArquivo($diretorio, $imagem);
+					$tamanho = getimagesize($imagem->getArquivoTemp());
+					if($tamanho[0] !== 255 and $tamanho[1] !== 255)
+						throw new Exception("Arquivos devem ter um tamanho fixo de 255x255");
+				}
+			}else{
+				$imagem = new ControleArquivo(null, null);
+			}
+
+			$usuario  = new Usuario($dados->dados->id);
+			$curso	  = new Curso(
+				isset($args->id)     	? $args->id	  	   : null, 
+				$usuario, 
+				isset($args->nome)  	? $args->nome  	   : null, 
+				$imagem->getNomeArquivo(), 
+				isset($args->horas) 	? $args->horas 	   : null, 
+				isset($args->descricao) ? $args->descricao : null, 
+				isset($args->preco)		? $args->preco : null
+			);
+
+			CursoDAO::verificarCriador($curso);
+			$resposta = CursoDAO::atualizar($curso);
+			$imagem->moverArquivo();
+		}catch(Exception $ex){
+			$resposta = ['status' => false];
+			$imagem->limparTemp();
+		}
+		return $resposta;
 		
 	}
 

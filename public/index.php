@@ -121,6 +121,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($cursos);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        //Atualizar
+        $group->post('/atualizar/{jwt}', function(Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleCurso::atualizar( $args['jwt'], $request->getQueryParams(), $request->getUploadedFiles() ) );
+            $response->getBody()->write($resposta);
+            return $response->withHeader('Content-Type', 'application/json');
+        });
     });
 
     $group->group('/modulo', function(RouteCollectorProxy $group){
