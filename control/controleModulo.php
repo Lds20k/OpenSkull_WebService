@@ -50,7 +50,6 @@ abstract class ControleModulo{
 
 	public static function deletar($id ,$jwt){
 		try{
-			$args     = (object)$args;
 			$dados    = OpenSkullJWT::decodificar($jwt);
 
 			$usuario  = new Usuario($dados->dados->id);
