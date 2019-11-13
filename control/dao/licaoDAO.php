@@ -50,7 +50,7 @@ abstract class LicaoDAO{
         $licoes = Array();
         $coluna = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($coluna as $chave => $valor) {
-         	$licao = new Licao($valor['ID'], $valor['Nome'], $valor['Conteudo']);
+         	$licao = new Licao($valor['ID'], $valor['Nome'], $valor['Conteudo'], $valor['Video']);
          	array_push($licoes, $licao->converter());
         }
         return ['status' => true, 'licoes' => $licoes];
@@ -70,7 +70,7 @@ abstract class LicaoDAO{
 
         $coluna = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $licao = new Licao($coluna['ID'], $coluna['Nome'], $coluna['Conteudo']);
+        $licao = new Licao($coluna['ID'], $coluna['Nome'], $coluna['Conteudo'], $coluna['Video']);
         $licao = $licao->converter();
 
         return ['status' => true, 'licao' => $licao];
