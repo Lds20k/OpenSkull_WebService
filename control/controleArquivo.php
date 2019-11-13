@@ -7,12 +7,18 @@ class ControleArquivo{
 
     public function __construct($diretorio, $arquivoTransferido)
 	{
-		$extencao = pathinfo($arquivoTransferido->getClientFilename(), PATHINFO_EXTENSION);
-		$nomeBase = bin2hex(random_bytes(8));
-		$this->nomeArquivo 		  = sprintf('%s.%0.8s', $nomeBase, $extencao);
-		$this->diretorio 		  = $diretorio;
-		$this->arquivoTransferido = $arquivoTransferido;
-		$this->moverArquivoTemp();
+		if(is_null($diretorio) and is_null($arquivoTransferido)){
+			$this->nomeArquivo 		  = null;
+			$this->diretorio 		  = null;
+			$this->arquivoTransferido = null;
+		}else{
+			$extencao = pathinfo($arquivoTransferido->getClientFilename(), PATHINFO_EXTENSION);
+			$nomeBase = bin2hex(random_bytes(8));
+			$this->nomeArquivo 		  = sprintf('%s.%0.8s', $nomeBase, $extencao);
+			$this->diretorio 		  = $diretorio;
+			$this->arquivoTransferido = $arquivoTransferido;
+			$this->moverArquivoTemp();
+		}
 	}
 
 	public function getNomeArquivo(){
@@ -33,14 +39,16 @@ class ControleArquivo{
 	}
 
 	public function moverArquivo(){
-		if(!file_exists($this->diretorio)){
-			try {
-				mkdir($this->diretorio, 0777, true);
-			} catch (Exception $ex) {
-				throw new Exception('Erro ao criar diretorio!');
+		if(!is_null($this->diretorio) and !is_null($this->nomeArquivo)){
+			if(!file_exists($this->diretorio)){
+				try {
+					mkdir($this->diretorio, 0777, true);
+				} catch (Exception $ex) {
+					throw new Exception('Erro ao criar diretorio!');
+				}
 			}
+			rename('temp/'.$this->nomeArquivo, $this->diretorio . DIRECTORY_SEPARATOR . $this->nomeArquivo);
 		}
-		rename('temp/'.$this->nomeArquivo, $this->diretorio . DIRECTORY_SEPARATOR . $this->nomeArquivo);
 	}
 
 	private function moverArquivoTemp(){

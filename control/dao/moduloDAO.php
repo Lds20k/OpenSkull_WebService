@@ -85,8 +85,18 @@ abstract class ModuloDAO{
     	return ['status' => true, 'modulo' => $modulo];
 	}
 
-	public static function deletar(){
+	public static function deletar(Modulo $modulo){
+		$conexao = ConexaoPDO::getConexao();
+		$SQL = 'DELETE '.LicaoDAO::$tabela.' FROM '.LicaoDAO::$tabela.' INNER JOIN '.ModuloDAO::$tabela.' ON '.LicaoDAO::$tabela.'.ID_Modulo = '.ModuloDAO::$tabela.'.ID WHERE '.ModuloDAO::$tabela.'ID = ?';
+		$modulo = $modulo->converter;
 
+		$stmt = $conexao->prepare($SQL);
+		$stmt->bindParam(1, $modulo->id);
+
+		if(!$stmt->execute())
+			throw new Exception('Erro ao deletar curso no banco!');
+
+		return ['status' => true];
 	}
 
 	public static function atualizar(Modulo $modulo){

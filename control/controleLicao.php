@@ -8,27 +8,26 @@ abstract class ControleLicao{
 		try{
 			$args    = (Object)$args;
 			$jwt   	 = OpenSkullJWT::decodificar($args->jwt);
-			
+
+			if(!isset($file['video'])){
+				$video = new ControleArquivo(null, null);
+			}else if($file['video']->getError() === UPLOAD_ERR_OK){
+				$video 	 = $file['video'];
+				$diretorio = 'midia/videos';
+				$video = new ControleArquivo($diretorio, $video);
+			}
 			$usuario = new Usuario($jwt->dados->id);
 			$modulo  = new Modulo($args->idModulo);
 			$curso   = ModuloDAO::getCurso($modulo, $usuario);
 			CursoDAO::verificarCriador($curso);
 
-			if(!empty($file)){
-				$video = $file['video'];
-				if($video->getError() === UPLOAD_ERR_OK){
-					$diretorio = 'midia/videos';
-					$video = ControleArquivo::moveUploadedFile($diretorio, $video);
-				}
-			}else{
-				$video = null;
-			}
-			$licao = new Licao(null, $args->nome, isset($args->conteudo) ? $args->conteudo : null, $video);
+			$licao = new Licao(null, $args->nome, isset($args->conteudo) ? $args->conteudo : null, $video->getNomeArquivo());
 			$modulo->addLicao($licao);
-			
 			$resposta = LicaoDAO::inserir($modulo);
+			$video->moverArquivo();
 		}catch(Exception $ex){
 			$resposta = ['status' => false];
+			$video->limparTemp();
 			echo $ex;
 		}
 		return $resposta;

@@ -151,6 +151,13 @@ $app->group('/api', function(RouteCollectorProxy $group){
             $response->getBody()->write($usuario);
             return $response->withHeader('Content-Type', 'application/json');
         });
+
+        //Deleta um
+        $group->delete('/{id}', function (Request $request, Response $response, $args) {
+            $resposta = json_encode( ControleModulo::deletar( $args['id']) );
+            $response->getBody()->write($resposta);
+            return $response;
+        });
     });
 
     $group->group('/licao', function(RouteCollectorProxy $group){

@@ -51,7 +51,7 @@ abstract class ControleModulo{
 
 	public static function deletar(){
 		try{
-
+			$resposta = ModuloDAO::deletar(new Modulo($id));
 		}catch(Exception $ex){
 			$resposta = ['status' => false];			
 		}
